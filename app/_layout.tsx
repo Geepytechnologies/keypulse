@@ -19,6 +19,7 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
+import { Nunito_700Bold } from "@expo-google-fonts/nunito";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -36,6 +37,7 @@ export default function RootLayout() {
     Roboto_400Regular,
     Roboto_500Medium,
     Roboto_700Bold,
+    Nunito_700Bold,
   });
 
   useEffect(() => {
@@ -51,6 +53,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>

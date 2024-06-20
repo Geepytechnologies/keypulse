@@ -6,4 +6,5 @@ export class Fonts {
   static rob400 = "Roboto_400Regular";
   static rob500 = "Roboto_500Medium";
   static rob700 = "Roboto_700Bold";
+  static nun700 = "Nunito_700Bold";
 }
