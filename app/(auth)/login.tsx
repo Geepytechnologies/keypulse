@@ -13,12 +13,15 @@ import Logotext from "@/assets/images/logotext.svg";
 import { globalstyles } from "@/styles/common";
 import { Fonts } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
 
 type Props = {};
 
 const login = (props: Props) => {
   return (
     <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.73)" }}>
+      <StatusBar style="light" />
       <ImageBackground
         source={require("@/assets/images/imagebg.png")}
         style={styles.image}
@@ -121,14 +124,16 @@ const login = (props: Props) => {
             }}
           >
             <Text>Not a member? </Text>
-            <Text
+            <Link
+              suppressHighlighting
+              href="(auth)/signup"
               style={{
                 fontFamily: Fonts.pop600,
                 textDecorationLine: "underline",
               }}
             >
               Sign Up
-            </Text>
+            </Link>
           </Text>
         </View>
       </View>
