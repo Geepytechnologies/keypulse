@@ -19,7 +19,7 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
-import { Nunito_700Bold } from "@expo-google-fonts/nunito";
+import { Nunito_700Bold, Nunito_900Black } from "@expo-google-fonts/nunito";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -38,6 +38,7 @@ export default function RootLayout() {
     Roboto_500Medium,
     Roboto_700Bold,
     Nunito_700Bold,
+    Nunito_900Black,
   });
 
   useEffect(() => {
