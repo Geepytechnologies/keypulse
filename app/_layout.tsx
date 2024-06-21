@@ -61,6 +61,10 @@ export default function RootLayout() {
           name="(auth)/forgotpassword"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="(auth)/resetpassword"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
