@@ -13,9 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Menu from "@/assets/images/icons/menu.svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { globalstyles } from "@/styles/common";
-import Calendar from "@/assets/images/calendar.svg";
-import AngleRight from "@/assets/images/icons/angleright.svg";
+
 import { Fonts } from "@/constants/Fonts";
+import Banner from "@/components/Banner";
+import Quotecard from "@/components/cards/Quotecard";
 
 export default function HomeScreen() {
   return (
@@ -40,75 +41,39 @@ export default function HomeScreen() {
           />
         </View>
       </View>
-      {/* banner */}
-      <View style={{ paddingHorizontal: 25, marginTop: 18 }}>
-        <ImageBackground
-          resizeMode="stretch"
-          style={{ width: "100%", height: 250 }}
-          source={require("@/assets/images/banner.png")}
+
+      <View style={styles.bottomsection}>
+        {/* banner */}
+        <Banner />
+        {/* Quote section */}
+        <View
+          style={[
+            globalstyles.rowview,
+            { justifyContent: "space-between", marginBottom: 15 },
+          ]}
         >
-          <View
-            style={[
-              globalstyles.rowview,
-              {
-                height: "100%",
-                justifyContent: "flex-end",
-                gap: 11,
-              },
-            ]}
+          <Text
+            style={{
+              color: "#1E1E1E",
+              fontFamily: Fonts.nun800,
+              fontSize: 14,
+              lineHeight: 16.8,
+            }}
           >
-            <View style={{ gap: 9 }}>
-              <Text style={{ width: 165 }}>
-                <Text
-                  style={[
-                    styles.bannertext,
-                    {
-                      color: "black",
-                    },
-                  ]}
-                >
-                  A Reliable personal&nbsp;
-                </Text>
-                <Text style={[styles.bannertext, { color: Colors.primary }]}>
-                  personal assistant&nbsp;
-                </Text>
-                <Text
-                  style={[
-                    styles.bannertext,
-                    {
-                      color: "black",
-                    },
-                  ]}
-                >
-                  for your{" "}
-                  <Text
-                    style={[
-                      styles.bannertext,
-                      {
-                        color: "#545871",
-                      },
-                    ]}
-                  >
-                    family
-                  </Text>
-                </Text>
-              </Text>
-              <TouchableOpacity style={[globalstyles.rowview, styles.button]}>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 10,
-                    fontFamily: Fonts.pop600,
-                  }}
-                >
-                  Get Quote
-                </Text>
-                <AngleRight />
-              </TouchableOpacity>
-            </View>
-            <Calendar />
-          </View>
-        </ImageBackground>
+            My Quotes
+          </Text>
+          <Text
+            style={{
+              fontFamily: Fonts.pop400,
+              textDecorationLine: "underline",
+              fontSize: 10,
+              color: Colors.primary,
+            }}
+          >
+            Show All
+          </Text>
+        </View>
+        <Quotecard />
       </View>
     </SafeAreaView>
   );
@@ -133,17 +98,20 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
   },
-  button: {
-    backgroundColor: "black",
-    padding: 8,
-    borderRadius: 40.5,
-    gap: 22,
-    justifyContent: "center",
-  },
-  bannertext: {
-    fontFamily: Fonts.nun900,
-    fontSize: 16,
-    lineHeight: 22,
-    letterSpacing: 0.9,
+  bottomsection: {
+    height: "100%",
+    backgroundColor: "white",
+    paddingHorizontal: 25,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    marginTop: 87,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });

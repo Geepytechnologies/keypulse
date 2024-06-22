@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import {
+  Poppins_300Light,
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
@@ -19,7 +20,12 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
-import { Nunito_700Bold, Nunito_900Black } from "@expo-google-fonts/nunito";
+import {
+  Nunito_400Regular,
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+  Nunito_900Black,
+} from "@expo-google-fonts/nunito";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -37,7 +43,9 @@ export default function RootLayout() {
     Roboto_400Regular,
     Roboto_500Medium,
     Roboto_700Bold,
+    Nunito_400Regular,
     Nunito_700Bold,
+    Nunito_800ExtraBold,
     Nunito_900Black,
   });
 
