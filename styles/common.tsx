@@ -8,8 +8,8 @@ export const globalstyles = StyleSheet.create({
     alignItems: "center",
   },
   hr: {
-    backgroundColor: "#E0E0E0",
-    height: 0.5,
+    backgroundColor: "#1711411A",
+    height: 2,
     width: "100%",
   },
   colview: {

@@ -17,65 +17,105 @@ import { globalstyles } from "@/styles/common";
 import { Fonts } from "@/constants/Fonts";
 import Banner from "@/components/Banner";
 import Quotecard from "@/components/cards/Quotecard";
+import Sidebar from "@/components/Sidebar";
+import { useSharedValue } from "react-native-reanimated";
+import Modal from "react-native-modal";
+import { useState } from "react";
 
 export default function HomeScreen() {
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
-      <StatusBar style="light" />
-      {/* header */}
-      <View
-        style={[
-          globalstyles.rowview,
-          { paddingHorizontal: 25, justifyContent: "space-between" },
-        ]}
-      >
-        <Menu />
-        <View style={[globalstyles.rowview, { gap: 10 }]}>
-          <View style={{ position: "relative" }}>
-            <MaterialCommunityIcons name="bell" size={24} color="white" />
-            <View style={styles.notification}></View>
-          </View>
-          <Image
-            style={styles.profileimg}
-            source={require("@/assets/images/avatar1.png")}
-          />
-        </View>
-      </View>
+  const sidebarWidth = useSharedValue(0);
+  const sidebar = 322;
 
-      <View style={styles.bottomsection}>
-        {/* banner */}
-        <Banner />
-        {/* Quote section */}
+  const openSidebar = () => {
+    sidebarWidth.value = sidebar;
+  };
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+    openSidebar();
+  };
+  const Backdrop = () => {
+    return <View style={{ flex: 1, backgroundColor: "black" }}></View>;
+  };
+  return (
+    <>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
+        <StatusBar style="light" />
+        {/* header */}
         <View
           style={[
             globalstyles.rowview,
-            { justifyContent: "space-between", marginBottom: 15 },
+            {
+              paddingHorizontal: 25,
+              justifyContent: "space-between",
+            },
           ]}
         >
-          <Text
-            style={{
-              color: "#1E1E1E",
-              fontFamily: Fonts.nun800,
-              fontSize: 14,
-              lineHeight: 16.8,
-            }}
-          >
-            My Quotes
-          </Text>
-          <Text
-            style={{
-              fontFamily: Fonts.pop400,
-              textDecorationLine: "underline",
-              fontSize: 10,
-              color: Colors.primary,
-            }}
-          >
-            Show All
-          </Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => toggleModal()}>
+            <Menu />
+          </TouchableOpacity>
+          <View style={[globalstyles.rowview, { gap: 10 }]}>
+            <View style={{ position: "relative" }}>
+              <MaterialCommunityIcons name="bell" size={24} color="white" />
+              <View style={styles.notification}></View>
+            </View>
+            <Image
+              style={styles.profileimg}
+              source={require("@/assets/images/avatar1.png")}
+            />
+          </View>
         </View>
-        <Quotecard />
-      </View>
-    </SafeAreaView>
+
+        <View style={styles.bottomsection}>
+          {/* banner */}
+          <Banner />
+          {/* Quote section */}
+          <View
+            style={[
+              globalstyles.rowview,
+              { justifyContent: "space-between", marginBottom: 15 },
+            ]}
+          >
+            <Text
+              style={{
+                color: "#1E1E1E",
+                fontFamily: Fonts.nun800,
+                fontSize: 14,
+                lineHeight: 16.8,
+              }}
+            >
+              My Quotes
+            </Text>
+            <Text
+              style={{
+                fontFamily: Fonts.pop400,
+                textDecorationLine: "underline",
+                fontSize: 10,
+                color: Colors.primary,
+              }}
+            >
+              Show All
+            </Text>
+          </View>
+          <Quotecard />
+        </View>
+      </SafeAreaView>
+      <Modal
+        style={{ margin: 0 }}
+        isVisible={isModalVisible}
+        onBackdropPress={toggleModal}
+        animationIn="slideInLeft"
+        animationOut="slideOutLeft"
+        swipeDirection={["left"]}
+        onSwipeComplete={toggleModal}
+        propagateSwipe={false}
+        customBackdrop={<Backdrop />}
+      >
+        {/* sidebar */}
+        <Sidebar sidebarWidth={sidebarWidth} toggleModal={toggleModal} />
+      </Modal>
+    </>
   );
 }
 
