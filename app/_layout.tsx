@@ -80,6 +80,7 @@ export default function RootLayout() {
         <Stack.Screen name="myquotes" options={{ headerShown: false }} />
         <Stack.Screen name="quotedetails" options={{ headerShown: false }} />
         <Stack.Screen name="editprofile" options={{ headerShown: false }} />
+        <Stack.Screen name="subscription" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
