@@ -1,5 +1,6 @@
 import {
   ImageBackground,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,7 +20,7 @@ const Banner = (props: Props) => {
     <View style={styles.bannercon}>
       <ImageBackground
         resizeMode="stretch"
-        style={{ width: "100%", height: 250 }}
+        style={{ width: "100%", height: 175 }}
         source={require("@/assets/images/banner.png")}
       >
         <View
@@ -27,7 +28,8 @@ const Banner = (props: Props) => {
             globalstyles.rowview,
             {
               height: "100%",
-              justifyContent: "flex-end",
+              paddingLeft: 23,
+              justifyContent: "space-between",
               gap: 11,
             },
           ]}
@@ -81,7 +83,7 @@ const Banner = (props: Props) => {
               <AngleRight />
             </TouchableOpacity>
           </View>
-          <Calendar />
+          <Calendar width={Platform.OS == "ios" ? 150 : 100} />
         </View>
       </ImageBackground>
     </View>

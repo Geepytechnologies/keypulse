@@ -8,7 +8,7 @@ import GetQuotes from "@/assets/images/icons/quotes.svg";
 import Home from "@/assets/images/icons/home.svg";
 import Settings from "@/assets/images/icons/settings.svg";
 import { Fonts } from "@/constants/Fonts";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -27,7 +27,8 @@ export default function TabLayout() {
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           paddingTop: 17,
-          height: 90,
+          paddingBottom: Platform.OS == "ios" ? 15 : 10,
+          height: Platform.OS == "ios" ? 75 : 65,
         },
       }}
     >
