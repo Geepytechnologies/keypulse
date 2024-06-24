@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
+import { router } from "expo-router";
 
 type Props = {};
 
-enum Status {
+export enum Status {
   Approved = "#10AC16",
   Pending = "#FFBB6A",
   Rejected = "#FF6A6A",
@@ -14,7 +15,9 @@ enum Status {
 
 const Quotecard = (props: Props) => {
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={() => router.push({ pathname: "quotedetails", params: {} })}
       style={[
         styles.container,
         globalstyles.rowview,
@@ -111,7 +114,7 @@ const Quotecard = (props: Props) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

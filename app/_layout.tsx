@@ -78,6 +78,7 @@ export default function RootLayout() {
         />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="myquotes" options={{ headerShown: false }} />
+        <Stack.Screen name="quotedetails" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
