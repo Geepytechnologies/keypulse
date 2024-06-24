@@ -21,6 +21,7 @@ import Sidebar from "@/components/Sidebar";
 import { useSharedValue } from "react-native-reanimated";
 import Modal from "react-native-modal";
 import { useState } from "react";
+import { Link } from "expo-router";
 
 export default function HomeScreen() {
   const sidebarWidth = useSharedValue(0);
@@ -87,7 +88,8 @@ export default function HomeScreen() {
             >
               My Quotes
             </Text>
-            <Text
+            <Link
+              href={"myquotes"}
               style={{
                 fontFamily: Fonts.pop400,
                 textDecorationLine: "underline",
@@ -96,7 +98,7 @@ export default function HomeScreen() {
               }}
             >
               Show All
-            </Text>
+            </Link>
           </View>
           <Quotecard />
         </View>

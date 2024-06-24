@@ -1,17 +1,160 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
+import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { Fonts } from "@/constants/Fonts";
+import { globalstyles } from "@/styles/common";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "@/constants/Colors";
+import User from "@/assets/images/icons/user-thick.svg";
+import Notification from "@/assets/images/icons/notification-thick.svg";
+import Lock from "@/assets/images/icons/lock.svg";
+import Card from "@/assets/images/icons/card.svg";
+import Help from "@/assets/images/icons/help.svg";
+import Subscription from "@/assets/images/icons/subscription-thick.svg";
+import Info from "@/assets/images/icons/info.svg";
+import Logout from "@/assets/images/icons/logout-thick.svg";
+import Flag from "@/assets/images/icons/flag.svg";
 
 type Props = {};
 
 const settings = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Text>settings</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
+      <StatusBar style="light" />
+      {/* header */}
+      <View
+        style={[
+          globalstyles.rowview,
+          {
+            paddingHorizontal: 25,
+            marginTop: 22,
+          },
+        ]}
+      >
+        <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
+          <Feather name="arrow-left" size={24} color="white" />
+        </TouchableOpacity>
+        <Text
+          style={{
+            fontFamily: Fonts.nun700,
+            fontSize: 20,
+            lineHeight: 24,
+            color: "#fff",
+            flex: 1,
+            textAlign: "center",
+          }}
+        >
+          Settings
+        </Text>
+      </View>
+      {/* body */}
+      <ScrollView style={styles.body}>
+        <View style={{ gap: 26 }}>
+          {/* 1 */}
+          <View style={{ gap: 13 }}>
+            <Text style={styles.headertext}>Account</Text>
+            <View style={styles.box}>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <User />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Edit profile
+                </Text>
+              </View>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Subscription />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Subscription
+                </Text>
+              </View>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Notification />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Notifications
+                </Text>
+              </View>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Lock />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Change Password
+                </Text>
+              </View>
+            </View>
+          </View>
+          {/* 2 */}
+          <View style={{ gap: 13 }}>
+            <Text style={styles.headertext}>Support & About</Text>
+            <View style={styles.box}>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Card />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Manage Billing
+                </Text>
+              </View>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Help />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Help & Support
+                </Text>
+              </View>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Info />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Terms and Policies
+                </Text>
+              </View>
+            </View>
+          </View>
+          {/* 3 */}
+          <View style={{ gap: 13 }}>
+            <Text style={styles.headertext}>Actions</Text>
+            <View style={styles.box}>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Flag />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Report a problem
+                </Text>
+              </View>
+              <View style={[globalstyles.rowview, { gap: 15 }]}>
+                <Logout />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Log out
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 export default settings;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  body: {
+    backgroundColor: "#fff",
+    padding: 25,
+    marginTop: 22,
+    height: "100%",
+  },
+  headertext: {
+    fontFamily: Fonts.nun600,
+    fontSize: 16,
+    color: Colors.primary,
+  },
+  box: {
+    backgroundColor: "#2427600D",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    gap: 9,
+    borderRadius: 6,
+  },
+});

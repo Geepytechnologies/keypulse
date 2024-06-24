@@ -22,6 +22,7 @@ import {
 } from "@expo-google-fonts/roboto";
 import {
   Nunito_400Regular,
+  Nunito_600SemiBold,
   Nunito_700Bold,
   Nunito_800ExtraBold,
   Nunito_900Black,
@@ -44,6 +45,7 @@ export default function RootLayout() {
     Roboto_500Medium,
     Roboto_700Bold,
     Nunito_400Regular,
+    Nunito_600SemiBold,
     Nunito_700Bold,
     Nunito_800ExtraBold,
     Nunito_900Black,
@@ -75,6 +77,7 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="myquotes" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

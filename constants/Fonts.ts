@@ -8,6 +8,7 @@ export class Fonts {
   static rob500 = "Roboto_500Medium";
   static rob700 = "Roboto_700Bold";
   static nun400 = "Nunito_400Regular";
+  static nun600 = "Nunito_600SemiBold";
   static nun700 = "Nunito_700Bold";
   static nun800 = "Nunito_800ExtraBold";
   static nun900 = "Nunito_900Black";
