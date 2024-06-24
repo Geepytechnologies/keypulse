@@ -5,7 +5,7 @@ import { Redirect } from "expo-router";
 type Props = {};
 
 const index = (props: Props) => {
-  return <Redirect href={"quotedetails"} />;
+  return <Redirect href={"editprofile"} />;
 };
 
 export default index;

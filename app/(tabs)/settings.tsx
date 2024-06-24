@@ -59,7 +59,11 @@ const settings = (props: Props) => {
       <ScrollView style={styles.body}>
         <View style={{ gap: 26 }}>
           {/* 1 */}
-          <View style={{ gap: 13 }}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push("editprofile")}
+            style={{ gap: 13 }}
+          >
             <Text style={styles.headertext}>Account</Text>
             <View style={styles.box}>
               <View style={[globalstyles.rowview, { gap: 15 }]}>
@@ -87,7 +91,7 @@ const settings = (props: Props) => {
                 </Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
           {/* 2 */}
           <View style={{ gap: 13 }}>
             <Text style={styles.headertext}>Support & About</Text>
