@@ -29,11 +29,25 @@ import {
 } from "@expo-google-fonts/nunito";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { Auth } from "aws-amplify";
+import { configure } from "@/utils/amplifyConfiguration";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+configure();
 export default function RootLayout() {
+  const getUser = async () => {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -60,7 +74,6 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
