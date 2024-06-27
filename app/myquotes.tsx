@@ -18,7 +18,7 @@ type Props = {};
 
 const myquotes = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
+    <SafeAreaView style={{ backgroundColor: Colors.primary }}>
       <StatusBar style="light" />
       {/* header */}
       <View

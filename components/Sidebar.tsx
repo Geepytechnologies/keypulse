@@ -26,12 +26,21 @@ import Money from "@/assets/images/icons/money.svg";
 import Subscription from "@/assets/images/icons/subscription.svg";
 import Call from "@/assets/images/icons/call.svg";
 import Logout from "@/assets/images/icons/logout.svg";
+import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/config/store";
+import { Helpers } from "@/utils/helpers";
+import { SIGNOUT } from "@/config/slices/userSlice";
+import { Auth } from "aws-amplify";
+import Toast from "react-native-toast-message";
 
 type Props = {
   sidebarWidth: any;
   toggleModal: any;
 };
 const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
+  const { currentuser } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -54,6 +63,15 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
       });
     }
   }, []);
+  const signout = async () => {
+    try {
+      toggleModal();
+      await Auth.signOut();
+      dispatch(SIGNOUT());
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
   return (
     <Animated.View
       style={[
@@ -62,6 +80,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         { paddingTop: Platform.OS == "ios" ? statusBarHeight + 38 : 38 },
       ]}
     >
+      <Toast />
       {/* header */}
       <View
         style={[
@@ -78,7 +97,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
             style={styles.profileimg}
             source={require("@/assets/images/avatar1.png")}
           />
-          <Text style={styles.name}>Michael Jordan</Text>
+          <Text style={styles.name}>{currentuser?.name}</Text>
         </View>
         <TouchableOpacity onPress={toggleModal} activeOpacity={0.8}>
           <Ionicons name="close" size={35} color={Colors.primary} />
@@ -90,6 +109,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
       <View style={{ paddingTop: 20, gap: 8 }}>
         <TouchableOpacity
           activeOpacity={0.8}
+          onPress={() => router.push("editprofile")}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <User />
@@ -122,6 +142,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
+          onPress={() => router.push("myquotes")}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Quote />
@@ -138,6 +159,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
+          onPress={() => router.push("subscription")}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Money />
@@ -154,6 +176,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
+          onPress={() => router.push("managesubscription")}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Subscription />
@@ -189,7 +212,8 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          activeOpacity={0.8}
+          onPress={signout}
+          activeOpacity={0.6}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Logout />

@@ -31,23 +31,15 @@ import {
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Auth } from "aws-amplify";
 import { configure } from "@/utils/amplifyConfiguration";
+import { Provider } from "react-redux";
+import { store } from "@/config/store";
+import AuthProvider from "@/utils/AuthProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 configure();
 export default function RootLayout() {
-  const getUser = async () => {
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      console.log(user);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getUser();
-  }, []);
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -75,33 +67,55 @@ export default function RootLayout() {
     return null;
   }
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+    <Provider store={store}>
+      <AuthProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack>
+            {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
 
-        <Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(auth)/forgotpassword"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="(auth)/resetpassword"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="myquotes" options={{ headerShown: false }} />
-        <Stack.Screen name="items" options={{ headerShown: false }} />
-        <Stack.Screen name="quotedetails" options={{ headerShown: false }} />
-        <Stack.Screen name="editprofile" options={{ headerShown: false }} />
-        <Stack.Screen name="subscription" options={{ headerShown: false }} />
-        <Stack.Screen name="changepassword" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="managesubscription"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+            <Stack.Screen
+              name="(auth)/signup"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)/login"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)/forgotpassword"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(auth)/resetpassword"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="myquotes" options={{ headerShown: false }} />
+            <Stack.Screen name="items" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="quotedetails"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="editprofile" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="subscription"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="changepassword"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="managesubscription"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="you" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ThemeProvider>
+      </AuthProvider>
+    </Provider>
   );
 }

@@ -1,5 +1,8 @@
 import {
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -7,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "@/assets/images/logo.svg";
 import Logotext from "@/assets/images/logotext.svg";
@@ -16,14 +19,99 @@ import { Fonts } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Link } from "expo-router";
+import { API } from "aws-amplify";
 
 type Props = {};
 
 const signup = (props: Props) => {
+  const [loading, setLoading] = useState(false);
+  const [isPasswordVisible1, setIsPasswordVisible1] = useState(false);
+  const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
+  const togglePasswordVisibility1 = () => {
+    setIsPasswordVisible1(!isPasswordVisible1);
+  };
+  const togglePasswordVisibility2 = () => {
+    setIsPasswordVisible2(!isPasswordVisible2);
+  };
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (name: any, value: any) => {
+    setFormData({ ...formData, [name]: value });
+  };
+  const validateForm = () => {
+    let valid = true;
+    const newErrors: any = {};
+
+    if (!formData.firstname.trim()) {
+      newErrors.firstname = "firstname is required";
+      valid = false;
+    }
+
+    if (!formData.lastname.trim()) {
+      newErrors.lastname = "lastname is required";
+      valid = false;
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+      valid = false;
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+  const handleSubmit = async () => {
+    console.log(formData);
+    setLoading(true);
+    try {
+      if (validateForm()) {
+        const response = await API.post("profile", "", {
+          name: `${formData.firstname} ${formData.lastname}`,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          country: "US",
+        });
+        console.log(response);
+        console.log("Form submitted successfully:", formData);
+      } else {
+        console.log("Form has errors. Please correct them.");
+      }
+    } catch (error: any) {
+      console.log(error.response);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.73)" }}
+      style={{ backgroundColor: "rgba(0,0,0,0.73)" }}
     >
       <StatusBar style="light" />
       <ImageBackground
@@ -55,7 +143,10 @@ const signup = (props: Props) => {
           </View>
         </View>
       </ImageBackground>
-      <View style={styles.formcon}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.formcon}
+      >
         <View style={{ gap: 23 }}>
           {/* firstname */}
           <View style={{ gap: 2 }}>
@@ -73,6 +164,8 @@ const signup = (props: Props) => {
                 placeholder="Type here"
                 placeholderTextColor={"#64748B"}
                 style={styles.inputbox}
+                value={formData.firstname}
+                onChangeText={(text) => handleChange("firstname", text)}
               />
             </View>
           </View>
@@ -92,6 +185,8 @@ const signup = (props: Props) => {
                 placeholder="Type here"
                 placeholderTextColor={"#64748B"}
                 style={styles.inputbox}
+                value={formData.lastname}
+                onChangeText={(text) => handleChange("lastname", text)}
               />
             </View>
           </View>
@@ -111,6 +206,8 @@ const signup = (props: Props) => {
                 placeholder="Type here"
                 placeholderTextColor={"#64748B"}
                 style={styles.inputbox}
+                value={formData.email}
+                onChangeText={(text) => handleChange("email", text)}
               />
             </View>
           </View>
@@ -130,6 +227,8 @@ const signup = (props: Props) => {
                 placeholder="Type here"
                 placeholderTextColor={"#64748B"}
                 style={styles.inputbox}
+                value={formData.phone}
+                onChangeText={(text) => handleChange("phone", text)}
               />
             </View>
           </View>
@@ -148,16 +247,24 @@ const signup = (props: Props) => {
               style={[
                 styles.inputboxcon,
                 globalstyles.rowview,
-                { justifyContent: "space-between" },
+                { justifyContent: "space-between", gap: 2 },
               ]}
             >
               <TextInput
                 placeholder="Enter Your Password"
                 placeholderTextColor={"#64748B"}
-                style={styles.inputbox}
-                secureTextEntry={true}
+                style={[styles.inputbox, { flex: 1 }]}
+                secureTextEntry={!isPasswordVisible1}
+                value={formData.password}
+                onChangeText={(text) => handleChange("password", text)}
               />
-              <Feather name="eye" size={24} color="#64748B" />
+              <Pressable onPress={togglePasswordVisibility1}>
+                <Feather
+                  name={isPasswordVisible1 ? "eye" : "eye-off"}
+                  size={24}
+                  color="#64748B"
+                />
+              </Pressable>
             </View>
           </View>
           {/* confirm Password */}
@@ -175,21 +282,33 @@ const signup = (props: Props) => {
               style={[
                 styles.inputboxcon,
                 globalstyles.rowview,
-                { justifyContent: "space-between" },
+                { justifyContent: "space-between", gap: 2 },
               ]}
             >
               <TextInput
                 placeholder="Enter Your Password"
                 placeholderTextColor={"#64748B"}
-                style={styles.inputbox}
-                secureTextEntry={true}
+                style={[styles.inputbox, { flex: 1 }]}
+                secureTextEntry={!isPasswordVisible2}
+                value={formData.confirmPassword}
+                onChangeText={(text) => handleChange("confirmPassword", text)}
               />
-              <Feather name="eye" size={24} color="#64748B" />
+              <Pressable onPress={togglePasswordVisibility2}>
+                <Feather
+                  name={isPasswordVisible2 ? "eye" : "eye-off"}
+                  size={24}
+                  color="#64748B"
+                />
+              </Pressable>
             </View>
           </View>
 
           {/* login btn */}
-          <TouchableOpacity activeOpacity={0.8} style={styles.btn}>
+          <TouchableOpacity
+            onPress={handleSubmit}
+            activeOpacity={0.8}
+            style={styles.btn}
+          >
             <Text
               style={{
                 fontFamily: Fonts.pop600,
@@ -199,7 +318,7 @@ const signup = (props: Props) => {
                 textAlign: "center",
               }}
             >
-              Sign Up
+              {loading ? "Processing..." : "Sign Up"}
             </Text>
           </TouchableOpacity>
           {/* not a member */}
@@ -224,7 +343,7 @@ const signup = (props: Props) => {
             </Link>
           </Text>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };

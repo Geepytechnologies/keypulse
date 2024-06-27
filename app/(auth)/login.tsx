@@ -1,12 +1,13 @@
 import {
   ImageBackground,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "@/assets/images/logo.svg";
 import Logotext from "@/assets/images/logotext.svg";
@@ -15,10 +16,74 @@ import { Fonts } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Link } from "expo-router";
+import { useDispatch } from "react-redux";
+import { Auth } from "aws-amplify";
+import Toast from "react-native-toast-message";
+import { SIGNIN } from "@/config/slices/userSlice";
 
 type Props = {};
 
 const login = (props: Props) => {
+  const [userdetails, setUserdetails] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+  const handleEmailChange = (text: string) => {
+    setUserdetails({ ...userdetails, email: text });
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setUserdetails({ ...userdetails, password: text });
+  };
+  const validateForm = () => {
+    let valid = true;
+    const newErrors: any = {};
+
+    if (!userdetails.email.trim()) {
+      newErrors.email = "email is required";
+      valid = false;
+    }
+
+    if (!userdetails.password.trim()) {
+      newErrors.password = "password is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await Auth.signIn(
+        userdetails.email,
+        userdetails.password
+      );
+      console.log(response);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Welcome",
+      });
+      dispatch(SIGNIN(response.attributes));
+    } catch (error: any) {
+      Toast.show({
+        type: "error",
+        text1: "Oops!!!",
+        text2: error.message,
+      });
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.73)" }}>
       <StatusBar style="light" />
@@ -65,9 +130,9 @@ const login = (props: Props) => {
             </Text>
             <View style={styles.inputboxcon}>
               <TextInput
+                onChangeText={(text) => handleEmailChange(text)}
                 placeholder="Type here"
                 placeholderTextColor={"#64748B"}
-                style={styles.inputbox}
               />
             </View>
           </View>
@@ -86,22 +151,33 @@ const login = (props: Props) => {
               style={[
                 styles.inputboxcon,
                 globalstyles.rowview,
-                { justifyContent: "space-between" },
+                { justifyContent: "space-between", gap: 3 },
               ]}
             >
               <TextInput
+                onChangeText={(text) => handlePasswordChange(text)}
                 placeholder="Enter Your Password"
                 placeholderTextColor={"#64748B"}
                 style={styles.inputbox}
-                secureTextEntry={true}
+                secureTextEntry={!isPasswordVisible}
               />
-              <Feather name="eye" size={24} color="#64748B" />
+              <Pressable onPress={togglePasswordVisibility}>
+                <Feather
+                  name={isPasswordVisible ? "eye" : "eye-off"}
+                  size={24}
+                  color="#64748B"
+                />
+              </Pressable>
             </View>
           </View>
           {/* forgot pass */}
           <Text style={styles.forgotpass}>Forget Password?</Text>
           {/* login btn */}
-          <TouchableOpacity activeOpacity={0.8} style={styles.btn}>
+          <TouchableOpacity
+            onPress={handleLogin}
+            activeOpacity={0.8}
+            style={styles.btn}
+          >
             <Text
               style={{
                 fontFamily: Fonts.pop600,
@@ -111,7 +187,7 @@ const login = (props: Props) => {
                 textAlign: "center",
               }}
             >
-              Login
+              {loading ? "Processing..." : "Login"}
             </Text>
           </TouchableOpacity>
           {/* not a member */}
@@ -137,6 +213,7 @@ const login = (props: Props) => {
           </Text>
         </View>
       </View>
+      <Toast />
     </View>
   );
 };
@@ -200,7 +277,9 @@ const styles = StyleSheet.create({
     padding: 19,
     borderWidth: 1,
   },
-  inputbox: {},
+  inputbox: {
+    flex: 1,
+  },
   forgotpass: {
     color: "#090314",
     fontFamily: Fonts.pop400,

@@ -1,4 +1,7 @@
 // amplifyConfig.js
+const url = `https://apidev.myfamilypa.com/customer/`;
+const region = "us-east-2";
+
 const config = {
   s3: {
     REGION: "us-east-2",
@@ -13,8 +16,70 @@ const config = {
   apiGateway: {
     URLs: [
       {
-        name: "YourAPIName",
-        endpoint: "https://your-api-endpoint",
+        name: "profile",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}profile`,
+      },
+      {
+        name: "recipients",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}recipients`,
+      },
+      {
+        name: "billing-history",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}billing_history`,
+      },
+      {
+        name: "subscriptions",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}subscriptions`,
+      },
+      {
+        name: "subscription-comments",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}subscription_comments`,
+      },
+      {
+        name: "quotes",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}quotes`,
+      },
+      {
+        name: "quote-comments",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}quote_comments`,
+      },
+      {
+        name: "quote-stripe",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}quote_stripe`,
+      },
+      {
+        name: "subscription-stripe",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}subscription_stripe`,
+      },
+      {
+        name: "services",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}services`,
+      },
+      {
+        name: "home",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}home`,
       },
     ],
   },
