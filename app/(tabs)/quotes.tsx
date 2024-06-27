@@ -73,7 +73,7 @@ const quotes = (props: Props) => {
     );
   };
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
+    <SafeAreaView style={{ backgroundColor: Colors.primary }}>
       <StatusBar style="light" />
       {/* header */}
       <View
@@ -100,6 +100,8 @@ const quotes = (props: Props) => {
           Get Quote
         </Text>
         <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => router.push("items")}
           style={{
             backgroundColor: "#fff",
             borderRadius: 5,
@@ -120,7 +122,7 @@ const quotes = (props: Props) => {
         </TouchableOpacity>
       </View>
       {/* body */}
-      <ScrollView style={styles.body}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
         <View style={{ gap: 25, marginBottom: 40 }}>
           {/* Please select a service */}
           <View style={{ gap: 10 }}>

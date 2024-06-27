@@ -78,10 +78,15 @@ export default function RootLayout() {
         />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="myquotes" options={{ headerShown: false }} />
+        <Stack.Screen name="items" options={{ headerShown: false }} />
         <Stack.Screen name="quotedetails" options={{ headerShown: false }} />
         <Stack.Screen name="editprofile" options={{ headerShown: false }} />
         <Stack.Screen name="subscription" options={{ headerShown: false }} />
         <Stack.Screen name="changepassword" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="managesubscription"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

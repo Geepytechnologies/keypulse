@@ -27,7 +27,7 @@ type Props = {};
 
 const settings = (props: Props) => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
+    <SafeAreaView style={{ backgroundColor: Colors.primary }}>
       <StatusBar style="light" />
       {/* header */}
       <View
@@ -59,49 +59,61 @@ const settings = (props: Props) => {
       <ScrollView style={styles.body}>
         <View style={{ gap: 26 }}>
           {/* 1 */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => router.push("editprofile")}
-            style={{ gap: 13 }}
-          >
+          <View style={{ gap: 13 }}>
             <Text style={styles.headertext}>Account</Text>
             <View style={styles.box}>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => router.push("editprofile")}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
                 <User />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Edit profile
                 </Text>
-              </View>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("managesubscription")}
+                activeOpacity={0.7}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
                 <Subscription />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Subscription
                 </Text>
-              </View>
+              </TouchableOpacity>
               <View style={[globalstyles.rowview, { gap: 15 }]}>
                 <Notification />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Notifications
                 </Text>
               </View>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
+              <TouchableOpacity
+                onPress={() => router.push("changepassword")}
+                activeOpacity={0.7}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
                 <Lock />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Change Password
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
           {/* 2 */}
           <View style={{ gap: 13 }}>
             <Text style={styles.headertext}>Support & About</Text>
             <View style={styles.box}>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
+              <TouchableOpacity
+                onPress={() => router.push("subscription")}
+                activeOpacity={0.7}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
                 <Card />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Manage Billing
                 </Text>
-              </View>
+              </TouchableOpacity>
               <View style={[globalstyles.rowview, { gap: 15 }]}>
                 <Help />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
