@@ -23,7 +23,7 @@ type Props = {};
 const quotedetails = (props: Props) => {
   const { item }: any = useLocalSearchParams();
   const quoteitems = JSON.parse(item);
-  const [quotecomments, setQuotecomments] = useState();
+  const [quotecomments, setQuotecomments] = useState([]);
   const getQuoteComments = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -34,16 +34,19 @@ const quotedetails = (props: Props) => {
       },
     };
     try {
-      await API.get(
+      const response = await API.get(
         "quote-comments",
-        `/${quoteitems.id}/${"10"}/${""}`,
+        `/${quoteitems.id}/${"20"}/${"0"}`,
         myInit
       );
-    } catch (error) {}
+      setQuotecomments(response.quote_comments);
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     if (quoteitems.id) {
-      //  getQuoteComments()
+      getQuoteComments();
     }
   }, []);
   return (
@@ -107,7 +110,26 @@ const quotedetails = (props: Props) => {
             {/* hr */}
             <View style={{ height: 0.5, backgroundColor: Colors.primary }} />
             {/* comments */}
-            <Commentbox />
+            {!quotecomments.length && (
+              <View style={[globalstyles.centerview, { flex: 1 }]}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.pop400,
+                    lineHeight: 22,
+                    fontSize: 18,
+                  }}
+                >
+                  No Comments yet
+                </Text>
+              </View>
+            )}
+
+            <View>
+              {quotecomments.length > 0 &&
+                quotecomments.map((comment, index) => {
+                  return <Commentbox key={index} comment={comment} />;
+                })}
+            </View>
           </View>
         </View>
       </ScrollView>

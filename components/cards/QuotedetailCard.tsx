@@ -11,7 +11,6 @@ type Props = {
 };
 
 const QuotedetailCard = ({ item }: Props) => {
-  console.log("item from details", item.amount);
   return (
     <View style={[styles.container, { margin: 5 }]}>
       <View style={[globalstyles.rowview, { justifyContent: "space-between" }]}>

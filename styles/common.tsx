@@ -1,4 +1,5 @@
 import { ScreenDimensions } from "@/constants/Dimensions";
+import { Fonts } from "@/constants/Fonts";
 import { StyleSheet } from "react-native";
 
 export const globalstyles = StyleSheet.create({
@@ -29,5 +30,12 @@ export const globalstyles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  error: {
+    color: "red",
+    marginTop: 5,
+    fontSize: 12,
+    fontFamily: Fonts.pop400,
+    lineHeight: 14.4,
   },
 });

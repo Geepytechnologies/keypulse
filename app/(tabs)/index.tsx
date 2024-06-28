@@ -25,6 +25,7 @@ import Modal from "react-native-modal";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "expo-router";
 import { API, Auth } from "aws-amplify";
+import { ScreenDimensions } from "@/constants/Dimensions";
 
 export default function HomeScreen() {
   const [quotes, setQuotes] = useState([]);
@@ -57,7 +58,7 @@ export default function HomeScreen() {
     try {
       const res = await API.get("quotes", "", myInit);
       setQuotes(res.quotes);
-      console.log("myresponse", res);
+      // console.log("myresponse", res);
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +107,10 @@ export default function HomeScreen() {
             <View
               style={[
                 globalstyles.rowview,
-                { justifyContent: "space-between", marginBottom: 15 },
+                {
+                  justifyContent: "space-between",
+                  marginBottom: 15,
+                },
               ]}
             >
               <Text
@@ -131,18 +135,23 @@ export default function HomeScreen() {
                 Show All
               </Link>
             </View>
-            <View>
+            <View style={{ flex: 1 }}>
+              {!quotes.length && (
+                <View style={[globalstyles.centerview, { flex: 1 }]}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.pop400,
+                      lineHeight: 22,
+                      fontSize: 18,
+                    }}
+                  >
+                    No Quotes
+                  </Text>
+                </View>
+              )}
               {quotes.map((item: any, index) => (
                 <Quotecard key={item.id} item={item} />
               ))}
-              {/* <FlatList
-                  ref={quoteref}
-                  renderItem={Quotecards}
-                  data={quotes}
-                  keyExtractor={(item) => item.id}
-                  showsVerticalScrollIndicator={false}
-                  style={{ marginBottom: 300 }}
-                /> */}
             </View>
           </View>
         </ScrollView>
@@ -190,6 +199,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     marginTop: 87,
+    minHeight: ScreenDimensions.screenHeight - 200,
     // shadowColor: "#000",
     // shadowOffset: {
     //   width: 0,

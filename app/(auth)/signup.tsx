@@ -19,7 +19,7 @@ import { Fonts } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { Link, router } from "expo-router";
-import { API } from "aws-amplify";
+import { API, Auth } from "aws-amplify";
 import Toast from "react-native-toast-message";
 
 type Props = {};
@@ -112,13 +112,22 @@ const signup = (props: Props) => {
     setLoading(true);
     try {
       if (validateForm()) {
-        const response = await API.post("profile", "", {
+        const session: any = await Auth.currentSession().catch((e) => {
+          console.log(e);
+        });
+        const data = {
           name: `${formData.firstname} ${formData.lastname}`,
-          email: formData.email,
+          email: formData.email.toLowerCase(),
           phone: formData.phone,
           password: formData.password,
           country: "US",
-        });
+        };
+        const myInit = {
+          body: data,
+        };
+
+        console.log(data);
+        const response = await API.post("profile", ` `, myInit);
         console.log(response);
         if (response) {
           Toast.show({
@@ -126,7 +135,7 @@ const signup = (props: Props) => {
             text1: "Sign Up",
             text2: "Successful",
           });
-          router.push("(auth)/login");
+          router.push("(auth)/verifyuser");
         }
         console.log("Form submitted successfully:", formData);
       } else {

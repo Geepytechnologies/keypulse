@@ -12,6 +12,7 @@ import AngleRight from "@/assets/images/icons/angleright.svg";
 import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
+import { router } from "expo-router";
 
 type Props = {};
 
@@ -70,7 +71,11 @@ const Banner = (props: Props) => {
                 </Text>
               </Text>
             </Text>
-            <TouchableOpacity style={[globalstyles.rowview, styles.button]}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => router.push("(tabs)/quotes")}
+              style={[globalstyles.rowview, styles.button]}
+            >
               <Text
                 style={{
                   color: "white",

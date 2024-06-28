@@ -39,7 +39,7 @@ const login = (props: Props) => {
     setIsPasswordVisible(!isPasswordVisible);
   };
   const handleEmailChange = (text: string) => {
-    setUserdetails({ ...userdetails, email: text });
+    setUserdetails({ ...userdetails, email: text.toLowerCase() });
   };
 
   const handlePasswordChange = (text: string) => {
@@ -197,7 +197,13 @@ const login = (props: Props) => {
               )}
             </View>
             {/* forgot pass */}
-            <Text style={styles.forgotpass}>Forget Password?</Text>
+            <Link
+              suppressHighlighting={true}
+              href={"(auth)/forgotpassword"}
+              style={styles.forgotpass}
+            >
+              Forget Password?
+            </Link>
             {/* login btn */}
             <TouchableOpacity
               onPress={handleLogin}

@@ -4,9 +4,11 @@ import { Fonts } from "@/constants/Fonts";
 import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
 
-type Props = {};
+type Props = {
+  comment: any;
+};
 
-const Commentbox = (props: Props) => {
+const Commentbox = ({ comment }: Props) => {
   return (
     <View style={{ gap: 10 }}>
       <View style={[globalstyles.rowview, { justifyContent: "space-between" }]}>

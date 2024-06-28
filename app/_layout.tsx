@@ -88,6 +88,10 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="(auth)/verifyuser"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="(auth)/forgotpassword"
               options={{ headerShown: false }}
             />

@@ -37,7 +37,8 @@ const AuthProvider = ({ children }: Props) => {
     if (!loading) {
       if (!currentuser && !authGroup) {
         router.replace("(auth)/login");
-      } else {
+      }
+      if (currentuser) {
         router.replace("(tabs)");
       }
     }
