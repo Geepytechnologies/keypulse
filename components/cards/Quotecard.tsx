@@ -5,30 +5,50 @@ import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { router } from "expo-router";
 
-type Props = {};
+type Props = {
+  item: any;
+};
 
 export enum Status {
   Approved = "#10AC16",
   Pending = "#FFBB6A",
   Rejected = "#FF6A6A",
 }
-
-const Quotecard = (props: Props) => {
+const statuscolor = (item: any) => {
+  switch (item.status) {
+    case "Approved":
+      return Status.Approved;
+    case "Awaiting Customer Approval":
+      return Status.Pending;
+    case "Rejected":
+      return Status.Rejected;
+    default:
+      return Status.Pending;
+  }
+};
+const Quotecard = ({ item }: Props) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => router.push({ pathname: "quotedetails", params: {} })}
+      onPress={() =>
+        router.push({
+          pathname: "quotedetails",
+          params: { item: JSON.stringify(item) },
+        })
+      }
       style={[
         styles.container,
         globalstyles.rowview,
-        { justifyContent: "space-between" },
+        { justifyContent: "space-between", gap: 10 },
       ]}
     >
-      <View style={[globalstyles.rowview, { height: "100%", gap: 15 }]}>
+      <View
+        style={[globalstyles.rowview, { height: "100%", gap: 15, flex: 1 }]}
+      >
         <View
           style={[
             {
-              backgroundColor: Status.Approved,
+              backgroundColor: statuscolor(item),
               width: 10,
               height: "100%",
               borderRadius: 10,
@@ -39,7 +59,7 @@ const Quotecard = (props: Props) => {
           <Text
             style={{ fontFamily: Fonts.nun400, fontSize: 12, lineHeight: 14.4 }}
           >
-            Q-1234566789
+            Q-{item.id}
           </Text>
           <Text
             style={{
@@ -50,7 +70,7 @@ const Quotecard = (props: Props) => {
               lineHeight: 14.4,
             }}
           >
-            Medical Care Giving
+            {item.service?.service_name}
           </Text>
           <Text
             style={{
@@ -60,7 +80,8 @@ const Quotecard = (props: Props) => {
               letterSpacing: 0.1,
             }}
           >
-            Exp. <Text style={{ fontFamily: Fonts.pop700 }}> 12/26</Text>
+            Exp.{" "}
+            <Text style={{ fontFamily: Fonts.pop700 }}> {item.expired_on}</Text>
           </Text>
           <Text
             style={{
@@ -86,21 +107,33 @@ const Quotecard = (props: Props) => {
           Cancel
         </Text>
         <View
-          style={{ backgroundColor: "#545871", borderRadius: 5, padding: 5 }}
+          style={[
+            globalstyles.centerview,
+            {
+              backgroundColor: "#545871",
+              borderRadius: 5,
+              padding: 5,
+              maxWidth: 75,
+            },
+          ]}
         >
           <Text
             style={{ fontSize: 14, fontFamily: Fonts.pop600, color: "#fff" }}
           >
-            $125.23
+            {item.amount}
           </Text>
         </View>
         <View
-          style={{
-            backgroundColor: Status.Approved,
-            paddingVertical: 10,
-            paddingHorizontal: 7,
-            borderRadius: 5,
-          }}
+          style={[
+            globalstyles.centerview,
+            {
+              backgroundColor: statuscolor(item),
+              paddingVertical: 10,
+              paddingHorizontal: 7,
+              borderRadius: 5,
+              maxWidth: 75,
+            },
+          ]}
         >
           <Text
             style={{
@@ -110,7 +143,9 @@ const Quotecard = (props: Props) => {
               lineHeight: 18,
             }}
           >
-            Approved
+            {item.status == "Awaiting Customer Approval"
+              ? "Pending"
+              : item.status}
           </Text>
         </View>
       </View>
@@ -128,6 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 200,
     minHeight: 108,
+    marginBottom: 15,
     // iOS
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },

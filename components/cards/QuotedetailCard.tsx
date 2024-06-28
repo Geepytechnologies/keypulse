@@ -4,10 +4,14 @@ import { Fonts } from "@/constants/Fonts";
 import { Status } from "./Quotecard";
 import { Colors } from "@/constants/Colors";
 import { globalstyles } from "@/styles/common";
+import { Helpers } from "@/utils/helpers";
 
-type Props = {};
+type Props = {
+  item: any;
+};
 
-const QuotedetailCard = (props: Props) => {
+const QuotedetailCard = ({ item }: Props) => {
+  console.log("item from details", item.amount);
   return (
     <View style={[styles.container, { margin: 5 }]}>
       <View style={[globalstyles.rowview, { justifyContent: "space-between" }]}>
@@ -19,7 +23,7 @@ const QuotedetailCard = (props: Props) => {
               lineHeight: 14.4,
             }}
           >
-            Q-1234566789
+            Q-{item.id}
           </Text>
           <Text
             style={{
@@ -30,7 +34,7 @@ const QuotedetailCard = (props: Props) => {
               lineHeight: 14.4,
             }}
           >
-            Medical Care Giving
+            {item.service?.service_name}
           </Text>
           <Text
             style={{
@@ -40,7 +44,8 @@ const QuotedetailCard = (props: Props) => {
               letterSpacing: 0.1,
             }}
           >
-            Exp. <Text style={{ fontFamily: Fonts.pop700 }}> 12/26</Text>
+            Exp.{" "}
+            <Text style={{ fontFamily: Fonts.pop700 }}> {item.expired_on}</Text>
           </Text>
         </View>
         <View style={{ gap: 11 }}>
@@ -52,7 +57,7 @@ const QuotedetailCard = (props: Props) => {
               lineHeight: 22,
             }}
           >
-            10 Jun 2024
+            {Helpers.formatDate(item.created_on)}
           </Text>
 
           <View
@@ -61,6 +66,7 @@ const QuotedetailCard = (props: Props) => {
               paddingVertical: 10,
               paddingHorizontal: 7,
               borderRadius: 5,
+              maxWidth: 75,
             }}
           >
             <Text
@@ -71,7 +77,9 @@ const QuotedetailCard = (props: Props) => {
                 lineHeight: 18,
               }}
             >
-              Approved
+              {item.status == "Awaiting Customer Approval"
+                ? "Pending"
+                : item.status}
             </Text>
           </View>
         </View>
@@ -92,7 +100,7 @@ const QuotedetailCard = (props: Props) => {
             textAlign: "center",
           }}
         >
-          $125.23
+          {item.amount}
         </Text>
       </View>
     </View>

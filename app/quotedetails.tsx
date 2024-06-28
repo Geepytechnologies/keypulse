@@ -5,23 +5,52 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { globalstyles } from "@/styles/common";
 import { Feather } from "@expo/vector-icons";
 import { Fonts } from "@/constants/Fonts";
-import { router } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import Quotecard, { Status } from "@/components/cards/Quotecard";
 import QuotedetailCard from "@/components/cards/QuotedetailCard";
 import Commentbox from "@/components/Commentbox";
+import { API, Auth } from "aws-amplify";
 
 type Props = {};
 
 const quotedetails = (props: Props) => {
+  const { item }: any = useLocalSearchParams();
+  const quoteitems = JSON.parse(item);
+  const [quotecomments, setQuotecomments] = useState();
+  const getQuoteComments = async () => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    try {
+      await API.get(
+        "quote-comments",
+        `/${quoteitems.id}/${"10"}/${""}`,
+        myInit
+      );
+    } catch (error) {}
+  };
+  useEffect(() => {
+    if (quoteitems.id) {
+      //  getQuoteComments()
+    }
+  }, []);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.primary }}>
+    <SafeAreaView
+      edges={["top", "left", "right"]}
+      style={{ flex: 1, backgroundColor: Colors.primary }}
+    >
       <StatusBar style="light" />
       {/* header */}
       <View
@@ -52,7 +81,7 @@ const quotedetails = (props: Props) => {
       {/* body */}
       <ScrollView style={[styles.body, { display: "flex" }]}>
         <View>
-          <QuotedetailCard />
+          <QuotedetailCard item={quoteitems} />
           {/* buttons */}
           <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
             <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>

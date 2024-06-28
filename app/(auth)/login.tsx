@@ -1,6 +1,9 @@
 import {
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -25,10 +28,10 @@ type Props = {};
 
 const login = (props: Props) => {
   const [userdetails, setUserdetails] = useState({
-    email: "",
-    password: "",
+    email: "developeralex1994131@gmail.com",
+    password: "Lucifer1994131!@#",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ email: string; password: string }>();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -42,12 +45,18 @@ const login = (props: Props) => {
   const handlePasswordChange = (text: string) => {
     setUserdetails({ ...userdetails, password: text });
   };
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
   const validateForm = () => {
     let valid = true;
     const newErrors: any = {};
 
     if (!userdetails.email.trim()) {
       newErrors.email = "email is required";
+      valid = false;
+    } else if (!isValidEmail(userdetails.email)) {
+      newErrors.email = "Please enter a valid email address";
       valid = false;
     }
 
@@ -62,17 +71,21 @@ const login = (props: Props) => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await Auth.signIn(
-        userdetails.email,
-        userdetails.password
-      );
-      console.log(response);
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "Welcome",
-      });
-      dispatch(SIGNIN(response.attributes));
+      if (validateForm()) {
+        const response = await Auth.signIn(
+          userdetails.email,
+          userdetails.password
+        );
+        console.log(response);
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Welcome",
+        });
+        dispatch(SIGNIN(response.attributes));
+      } else {
+        console.log("Form has errors. Please correct them.");
+      }
     } catch (error: any) {
       Toast.show({
         type: "error",
@@ -85,136 +98,150 @@ const login = (props: Props) => {
     }
   };
   return (
-    <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.73)" }}>
-      <StatusBar style="light" />
-      <ImageBackground
-        source={require("@/assets/images/imagebg.png")}
-        style={styles.image}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.73)" }}
       >
-        <View style={styles.darken}></View>
-        <View
-          style={[
-            styles.headerelement,
-            globalstyles.colview,
-            { alignItems: "center" },
-          ]}
+        <StatusBar style="light" />
+        <ImageBackground
+          source={require("@/assets/images/imagebg.png")}
+          style={styles.image}
         >
-          <View>
-            <View style={globalstyles.centerview}>
-              <Logo />
-            </View>
-            <Logotext />
-          </View>
-          <View style={{ gap: 10 }}>
-            <Text style={styles.logintext}>Login</Text>
+          <View style={styles.darken}></View>
+          <View
+            style={[
+              styles.headerelement,
+              globalstyles.colview,
+              { alignItems: "center" },
+            ]}
+          >
             <View>
-              <Text style={styles.welcome}>Welcome Back!</Text>
-              <Text style={styles.enterdetails}>
-                Please enter the details to proceed.
+              <View style={globalstyles.centerview}>
+                <Logo />
+              </View>
+              <Logotext />
+            </View>
+            <View style={{ gap: 10 }}>
+              <Text style={styles.logintext}>Login</Text>
+              <View>
+                <Text style={styles.welcome}>Welcome Back!</Text>
+                <Text style={styles.enterdetails}>
+                  Please enter the details to proceed.
+                </Text>
+              </View>
+            </View>
+          </View>
+        </ImageBackground>
+        <View style={styles.formcon}>
+          <View style={{ gap: 23 }}>
+            <View style={{ gap: 2 }}>
+              <Text
+                style={{
+                  fontFamily: Fonts.pop600,
+                  fontSize: 12,
+                  lineHeight: 14.4,
+                }}
+              >
+                Email
               </Text>
-            </View>
-          </View>
-        </View>
-      </ImageBackground>
-      <View style={styles.formcon}>
-        <View style={{ gap: 23 }}>
-          <View style={{ gap: 2 }}>
-            <Text
-              style={{
-                fontFamily: Fonts.pop600,
-                fontSize: 12,
-                lineHeight: 14.4,
-              }}
-            >
-              Email
-            </Text>
-            <View style={styles.inputboxcon}>
-              <TextInput
-                onChangeText={(text) => handleEmailChange(text)}
-                placeholder="Type here"
-                placeholderTextColor={"#64748B"}
-              />
-            </View>
-          </View>
-          {/* Password */}
-          <View style={{ gap: 2 }}>
-            <Text
-              style={{
-                fontFamily: Fonts.pop600,
-                fontSize: 12,
-                lineHeight: 14.4,
-              }}
-            >
-              Password
-            </Text>
-            <View
-              style={[
-                styles.inputboxcon,
-                globalstyles.rowview,
-                { justifyContent: "space-between", gap: 3 },
-              ]}
-            >
-              <TextInput
-                onChangeText={(text) => handlePasswordChange(text)}
-                placeholder="Enter Your Password"
-                placeholderTextColor={"#64748B"}
-                style={styles.inputbox}
-                secureTextEntry={!isPasswordVisible}
-              />
-              <Pressable onPress={togglePasswordVisibility}>
-                <Feather
-                  name={isPasswordVisible ? "eye" : "eye-off"}
-                  size={24}
-                  color="#64748B"
+              <View style={styles.inputboxcon}>
+                <TextInput
+                  onChangeText={(text) => handleEmailChange(text)}
+                  placeholder="Type here"
+                  placeholderTextColor={"#64748B"}
                 />
-              </Pressable>
+              </View>
+              {errors && errors.email && (
+                <Text style={styles.error}>{errors.email}</Text>
+              )}
             </View>
-          </View>
-          {/* forgot pass */}
-          <Text style={styles.forgotpass}>Forget Password?</Text>
-          {/* login btn */}
-          <TouchableOpacity
-            onPress={handleLogin}
-            activeOpacity={0.8}
-            style={styles.btn}
-          >
+            {/* Password */}
+            <View style={{ gap: 2 }}>
+              <Text
+                style={{
+                  fontFamily: Fonts.pop600,
+                  fontSize: 12,
+                  lineHeight: 14.4,
+                }}
+              >
+                Password
+              </Text>
+              <View
+                style={[
+                  styles.inputboxcon,
+                  globalstyles.rowview,
+                  { justifyContent: "space-between", gap: 3 },
+                ]}
+              >
+                <TextInput
+                  onChangeText={(text) => handlePasswordChange(text)}
+                  placeholder="Enter Your Password"
+                  placeholderTextColor={"#64748B"}
+                  style={styles.inputbox}
+                  secureTextEntry={!isPasswordVisible}
+                />
+                <Pressable onPress={togglePasswordVisibility}>
+                  <Feather
+                    name={isPasswordVisible ? "eye" : "eye-off"}
+                    size={24}
+                    color="#64748B"
+                  />
+                </Pressable>
+              </View>
+              {errors && errors.password && (
+                <Text style={styles.error}>{errors.password}</Text>
+              )}
+            </View>
+            {/* forgot pass */}
+            <Text style={styles.forgotpass}>Forget Password?</Text>
+            {/* login btn */}
+            <TouchableOpacity
+              onPress={handleLogin}
+              activeOpacity={0.8}
+              style={styles.btn}
+            >
+              <Text
+                style={{
+                  fontFamily: Fonts.pop600,
+                  fontSize: 14,
+                  lineHeight: 16.8,
+                  color: "#fff",
+                  textAlign: "center",
+                }}
+              >
+                {loading ? "Processing..." : "Login"}
+              </Text>
+            </TouchableOpacity>
+            {/* not a member */}
             <Text
               style={{
-                fontFamily: Fonts.pop600,
-                fontSize: 14,
-                lineHeight: 16.8,
-                color: "#fff",
                 textAlign: "center",
+                lineHeight: 19,
+                fontSize: 14,
+                color: "#000000B2",
               }}
             >
-              {loading ? "Processing..." : "Login"}
+              <Text>Not a member? </Text>
+              <Link
+                suppressHighlighting
+                href="(auth)/signup"
+                style={{
+                  fontFamily: Fonts.pop600,
+                  textDecorationLine: "underline",
+                }}
+              >
+                Sign Up
+              </Link>
             </Text>
-          </TouchableOpacity>
-          {/* not a member */}
-          <Text
-            style={{
-              textAlign: "center",
-              lineHeight: 19,
-              fontSize: 14,
-              color: "#000000B2",
-            }}
-          >
-            <Text>Not a member? </Text>
-            <Link
-              suppressHighlighting
-              href="(auth)/signup"
-              style={{
-                fontFamily: Fonts.pop600,
-                textDecorationLine: "underline",
-              }}
-            >
-              Sign Up
-            </Link>
-          </Text>
+          </View>
         </View>
-      </View>
-      <Toast />
-    </View>
+        <Toast />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -292,5 +319,12 @@ const styles = StyleSheet.create({
     borderRadius: 40.5,
     backgroundColor: "black",
     paddingVertical: 19,
+  },
+  error: {
+    color: "red",
+    marginTop: 5,
+    fontSize: 12,
+    fontFamily: Fonts.pop400,
+    lineHeight: 14.4,
   },
 });

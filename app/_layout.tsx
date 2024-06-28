@@ -43,6 +43,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Poppins_300Light,
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
@@ -73,6 +74,9 @@ export default function RootLayout() {
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
             {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
 
             <Stack.Screen
@@ -91,7 +95,6 @@ export default function RootLayout() {
               name="(auth)/resetpassword"
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="myquotes" options={{ headerShown: false }} />
             <Stack.Screen name="items" options={{ headerShown: false }} />
             <Stack.Screen

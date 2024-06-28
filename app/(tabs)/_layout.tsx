@@ -26,9 +26,9 @@ export default function TabLayout() {
           ...styles.header,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          paddingTop: 17,
-          paddingBottom: Platform.OS == "ios" ? 15 : 10,
-          height: Platform.OS == "ios" ? 75 : 65,
+          // paddingTop: 17,
+          // paddingBottom: Platform.OS == "ios" ? 15 : 10,
+          // height: Platform.OS == "ios" ? 75 : 65,
         },
       }}
     >

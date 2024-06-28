@@ -1,8 +1,10 @@
 import { SIGNIN, SIGNOUT } from "@/config/slices/userSlice";
 import { RootState } from "@/config/store";
+import { globalstyles } from "@/styles/common";
 import { Auth } from "aws-amplify";
-import { router, useSegments } from "expo-router";
-import React, { useEffect } from "react";
+import { Slot, router, useSegments } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
 };
 
 const AuthProvider = ({ children }: Props) => {
+  const [loading, setLoading] = useState(true);
   const segments = useSegments();
   const authGroup = segments[0] === "(auth)";
   const { currentuser } = useSelector((state: RootState) => state.user);
@@ -20,7 +23,9 @@ const AuthProvider = ({ children }: Props) => {
       const res = await Auth.currentAuthenticatedUser();
       dispatch(SIGNIN(res.attributes));
     } catch (error) {
-      dispatch(SIGNOUT());
+      //   dispatch(SIGNOUT());
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,15 +34,25 @@ const AuthProvider = ({ children }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (currentuser) {
-      router.replace("(tabs)");
-    } else {
-      if (!authGroup) {
+    if (!loading) {
+      if (!currentuser && !authGroup) {
         router.replace("(auth)/login");
+      } else {
+        router.replace("(tabs)");
       }
     }
-  }, [currentuser, segments]);
+  }, [loading, currentuser, authGroup]);
+
+  if (loading) {
+    return (
+      <View style={[globalstyles.centerview, { flex: 1 }]}>
+        <ActivityIndicator />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return <>{children}</>;
 };
 
-export default AuthProvider;
+export default React.memo(AuthProvider);
