@@ -118,6 +118,7 @@ export default function RootLayout() {
               name="managesubscription"
               options={{ headerShown: false }}
             />
+            <Stack.Screen name="comments" options={{ headerShown: false }} />
             <Stack.Screen name="you" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>

@@ -12,7 +12,7 @@ import { StatusBar } from "expo-status-bar";
 import { globalstyles } from "@/styles/common";
 import { Feather } from "@expo/vector-icons";
 import { Fonts } from "@/constants/Fonts";
-import { router, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, router, useLocalSearchParams, useRouter } from "expo-router";
 import Quotecard, { Status } from "@/components/cards/Quotecard";
 import QuotedetailCard from "@/components/cards/QuotedetailCard";
 import Commentbox from "@/components/Commentbox";
@@ -88,7 +88,7 @@ const quotedetails = (props: Props) => {
           {/* buttons */}
           <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
             <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>
-              <Text style={styles.comment}>Comments</Text>
+              <Text style={styles.comment}>Approve</Text>
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} style={styles.cancelbtn}>
               <Text style={styles.cancel}>Cancel</Text>
@@ -96,40 +96,21 @@ const quotedetails = (props: Props) => {
           </View>
         </View>
         {/* comments */}
-        <View style={{ marginTop: 50 }}>
+        <View style={{ marginTop: 15 }}>
           <View style={{ gap: 10 }}>
-            <Text
+            <Link
+              href={"comments"}
+              suppressHighlighting={true}
               style={{
-                fontFamily: Fonts.pop600,
+                fontFamily: Fonts.pop700,
                 fontSize: 12,
-                color: Colors.primary,
+                color: "#545871",
+                textDecorationLine: "underline",
+                textAlign: "center",
               }}
             >
-              Comments
-            </Text>
-            {/* hr */}
-            <View style={{ height: 0.5, backgroundColor: Colors.primary }} />
-            {/* comments */}
-            {!quotecomments.length && (
-              <View style={[globalstyles.centerview, { flex: 1 }]}>
-                <Text
-                  style={{
-                    fontFamily: Fonts.pop400,
-                    lineHeight: 22,
-                    fontSize: 18,
-                  }}
-                >
-                  No Comments yet
-                </Text>
-              </View>
-            )}
-
-            <View>
-              {quotecomments.length > 0 &&
-                quotecomments.map((comment, index) => {
-                  return <Commentbox key={index} comment={comment} />;
-                })}
-            </View>
+              Show Comments
+            </Link>
           </View>
         </View>
       </ScrollView>

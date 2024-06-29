@@ -124,22 +124,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
             Manage Profile
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
-        >
-          <Notification />
-          <Text
-            style={{
-              fontFamily: Fonts.pop500,
-              fontSize: 16,
-              lineHeight: 24,
-              letterSpacing: -0.16,
-            }}
-          >
-            Notifications
-          </Text>
-        </TouchableOpacity>
+
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => router.push("myquotes")}

@@ -76,7 +76,6 @@ const login = (props: Props) => {
           userdetails.email,
           userdetails.password
         );
-        console.log(response);
         Toast.show({
           type: "success",
           text1: "Success",

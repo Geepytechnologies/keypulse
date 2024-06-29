@@ -26,8 +26,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "expo-router";
 import { API, Auth } from "aws-amplify";
 import { ScreenDimensions } from "@/constants/Dimensions";
+import React from "react";
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   const [quotes, setQuotes] = useState([]);
   const quoteref = useRef<FlatList | null>(null);
   const sidebarWidth = useSharedValue(0);
@@ -66,7 +67,6 @@ export default function HomeScreen() {
   useEffect(() => {
     getQuotes();
   }, []);
-  const Quotecards = ({ item }: any) => <Quotecard item={item} />;
   return (
     <>
       <StatusBar style="light" />
@@ -89,10 +89,6 @@ export default function HomeScreen() {
               <Menu />
             </TouchableOpacity>
             <View style={[globalstyles.rowview, { gap: 10 }]}>
-              <View style={{ position: "relative" }}>
-                <MaterialCommunityIcons name="bell" size={24} color="white" />
-                <View style={styles.notification}></View>
-              </View>
               <Image
                 style={styles.profileimg}
                 source={require("@/assets/images/avatar1.png")}
@@ -172,7 +168,9 @@ export default function HomeScreen() {
       </Modal>
     </>
   );
-}
+};
+
+export default React.memo(HomeScreen);
 
 const styles = StyleSheet.create({
   notification: {

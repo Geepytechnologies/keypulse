@@ -44,7 +44,7 @@ const subscription = (props: Props) => {
             textAlign: "center",
           }}
         >
-          Manage Billing
+          Billing History
         </Text>
       </View>
       {/* body */}
