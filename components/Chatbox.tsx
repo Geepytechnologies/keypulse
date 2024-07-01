@@ -22,46 +22,52 @@ const Chatbox = ({ item }: Chat) => {
     <>
       {/* notmymessage */}
       {!ismyMessage && (
-        <View
-          style={[
-            globalstyles.rowview,
-            { alignSelf: "flex-start" },
-            { marginTop: 25, gap: 12 },
-          ]}
-        >
-          <Image
-            source={require("@/assets/images/avatar.png")}
-            style={styles.profile}
-          />
-          <View>
-            <Text style={styles.time}>16:45</Text>
+        <View style={[globalstyles.rowview, { marginTop: 25 }]}>
+          <View
+            style={[
+              globalstyles.rowview,
+              {
+                justifyContent: "space-between",
+                gap: 12,
+                paddingVertical: 5,
+              },
+            ]}
+          >
+            <Image
+              source={require("@/assets/images/avatar.png")}
+              style={styles.profile}
+            />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.time}>16:45</Text>
 
-            <View style={[styles.chatcon, { gap: 8 }]}>
-              <Text style={styles.chat}>{item.message}</Text>
+              <Text style={[styles.chatcon]}>{item.message}</Text>
             </View>
           </View>
         </View>
       )}
       {/* ismymessage */}
       {ismyMessage && (
-        <View
-          style={[
-            globalstyles.rowview,
-            { alignSelf: "flex-end" },
-            { marginTop: 25, gap: 12 },
-          ]}
-        >
-          <View>
-            <Text style={styles.timeforme}>16:45</Text>
+        <View style={[{ marginTop: 25 }]}>
+          <View
+            style={[
+              globalstyles.rowview,
+              {
+                justifyContent: "space-between",
+                paddingVertical: 5,
+                gap: 12,
+              },
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={styles.timeforme}>09:25:01 AM</Text>
 
-            <View style={[styles.chatconforme, { gap: 8 }]}>
-              <Text style={styles.chatforme}>{item.message}</Text>
+              <Text style={styles.chatconforme}>{item.message}</Text>
             </View>
+            <Image
+              source={require("@/assets/images/avatar.png")}
+              style={styles.profile}
+            />
           </View>
-          <Image
-            source={require("@/assets/images/avatar.png")}
-            style={styles.profile}
-          />
         </View>
       )}
     </>
@@ -76,16 +82,24 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
     borderTopRightRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    padding: 12,
+    color: "#55626B",
+    fontFamily: Fonts.pop400,
+    fontSize: 12,
+    lineHeight: 12,
+    letterSpacing: 0.12,
   },
   chatconforme: {
     backgroundColor: Colors.primary,
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    padding: 12,
+    color: "#fff",
+    fontFamily: Fonts.pop400,
+    fontSize: 12,
+    lineHeight: 12,
+    letterSpacing: 0.12,
   },
   chat: {
     color: "#55626B",
@@ -100,19 +114,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 12,
     letterSpacing: 0.12,
+    backgroundColor: "red",
   },
   timeforme: {
     fontFamily: Fonts.pop400,
     color: "#797C7B80",
     fontSize: 10,
-    lineHeight: 10,
+    lineHeight: 14,
     textAlign: "right",
   },
   time: {
     fontFamily: Fonts.pop400,
     color: "#797C7B80",
     fontSize: 10,
-    lineHeight: 10,
+    lineHeight: 14,
   },
   profile: {
     width: 36,

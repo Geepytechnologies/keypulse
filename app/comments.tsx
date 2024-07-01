@@ -44,19 +44,21 @@ const comments = (props: Props) => {
   const Action = () => {
     return (
       <View style={[globalstyles.rowview, styles.actioncontainer]}>
-        <View style={[globalstyles.rowview, styles.inputcon]}>
-          <TextInput
-            placeholder="Write your message"
-            placeholderTextColor={"#797C7B80"}
-            style={styles.textinput}
-          />
-          <Feather name="send" size={24} color={Colors.primary} />
+        <TextInput
+          placeholder="Write your message"
+          placeholderTextColor={"#797C7B80"}
+          style={styles.textinput}
+        />
+        <View style={styles.sendcon}>
+          <Text style={styles.send}>Send</Text>
         </View>
       </View>
     );
   };
   return (
-    <SafeAreaView style={{ backgroundColor: Colors.primary, flex: 1 }}>
+    <SafeAreaView
+      style={{ backgroundColor: Colors.primary, flex: 1, paddingBottom: 10 }}
+    >
       <StatusBar style="light" />
       {/* header */}
       <View
@@ -85,7 +87,7 @@ const comments = (props: Props) => {
         </Text>
       </View>
       {/* body */}
-      <View style={[styles.body, { display: "flex", backgroundColor: "#fff" }]}>
+      <View style={[styles.body, { display: "flex" }]}>
         <FlatList
           data={chatdata}
           renderItem={Chatbox}
@@ -94,6 +96,9 @@ const comments = (props: Props) => {
           inverted={false}
           //   ListFooterComponent={<Action />}
         />
+        {/* {chatdata.map((item, index) => (
+          <Chatbox item={item} />
+        ))} */}
         <Action />
       </View>
     </SafeAreaView>
@@ -118,10 +123,6 @@ const styles = StyleSheet.create({
   inputcon: {
     paddingHorizontal: 19,
     paddingVertical: 18,
-    borderRadius: 8,
-    borderColor: "#E2E8F0",
-    borderWidth: 1,
-    backgroundColor: "#fff",
   },
   btn: {
     backgroundColor: "black",
@@ -139,9 +140,25 @@ const styles = StyleSheet.create({
     color: "#020202",
   },
   actioncontainer: {
-    paddingVertical: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 10,
+    borderRadius: 12,
     gap: 12,
-    backgroundColor: "#fefefe",
+    backgroundColor: "#F3F6F6",
     marginTop: 20,
+  },
+  sendcon: {
+    backgroundColor: Colors.primary,
+    borderRadius: 41,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    minWidth: 64,
+  },
+  send: {
+    color: "#FFFFFF",
+    fontFamily: Fonts.pop600,
+    fontSize: 12,
+    textAlign: "center",
   },
 });

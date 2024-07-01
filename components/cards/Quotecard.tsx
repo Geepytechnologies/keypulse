@@ -3,7 +3,7 @@ import React from "react";
 import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 
 type Props = {
   item: any;
@@ -83,7 +83,9 @@ const Quotecard = ({ item }: Props) => {
             Exp.{" "}
             <Text style={{ fontFamily: Fonts.pop700 }}> {item.expired_on}</Text>
           </Text>
-          <Text
+          <Link
+            suppressHighlighting={true}
+            href="comments"
             style={{
               fontFamily: Fonts.pop600,
               fontSize: 12,
@@ -92,7 +94,7 @@ const Quotecard = ({ item }: Props) => {
             }}
           >
             Show Comments
-          </Text>
+          </Link>
         </View>
       </View>
       <View style={{ gap: 11 }}>
