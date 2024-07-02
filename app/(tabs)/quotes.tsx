@@ -1,6 +1,8 @@
 import {
+  Animated,
   Button,
   FlatList,
+  LayoutChangeEvent,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
@@ -19,42 +21,70 @@ import { router } from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
 import Radiofill from "@/assets/images/icons/radio-fill.svg";
 import RadioOutline from "@/assets/images/icons/radio-outline.svg";
+import { API, Auth } from "aws-amplify";
+import Itemcard from "@/components/cards/Itemcard";
 
 type Props = {};
 
+interface IServiceDTO {
+  created_on: string;
+  description: string;
+  id: string;
+  image_name: string;
+  is_location_required: boolean;
+  item_prices: string[];
+  items: string[];
+  locations: string[];
+  price_range: string[];
+  sequence: number;
+  service_frequency: string;
+  service_name: string;
+  status: string;
+}
+
 const quotes = (props: Props) => {
+  //dropdown
+  const [expanded, setExpanded] = useState(false);
+  const animation = useRef(new Animated.Value(0)).current;
+
+  const toggleDropdown = () => {
+    const finalValue = expanded ? 0 : 200;
+    Animated.timing(animation, {
+      toValue: finalValue,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+    setExpanded(!expanded);
+  };
   const [selectedLanguage, setSelectedLanguage] = useState();
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [address, setAddress] = useState(null);
-  const servicterms = [
-    { id: 1, label: "One time" },
-    { id: 2, label: "Daily" },
-    { id: 3, label: "Weekly" },
-    { id: 4, label: "Monthly" },
-  ];
-  const [serviceterm, setServiceterm] = useState(servicterms[0].label);
+  const [services, setServices] = useState<IServiceDTO[]>([]);
+  const [serviceItems, setServiceItems] = useState<any>([]);
+  const [serviceTerms, setServiceTerms] = useState("Choose Service");
+  const [singleServiceItem, setSingleServiceItem] = useState();
+  const [states, setStates] = useState<any>({});
+  const serviceNames = services.map((service) => ({
+    label: service.service_name,
+    value: service.service_name,
+  }));
 
-  const selectboxref = useRef<FlatList | null>(null);
-  const dummyarray = [1, 2, 3, 4];
-  const items = [
-    { label: "Option 1", value: "option1" },
-    { label: "Option 2", value: "option2" },
-    { label: "Option 3", value: "option3" },
-  ];
+  const [serviceterm, setServiceterm] = useState("");
 
-  const Selectbox = ({ item, index }: any) => {
-    const handleServiceterm = () => {
-      setServiceterm(item.label);
+  const Selectbox = () => {
+    const handleServiceterm = (item: string) => {
+      setServiceterm(item);
     };
     const checkactive = () => {
-      if (item.label === serviceterm) {
+      if (serviceTerms === serviceterm) {
         return true;
       }
       return false;
     };
     return (
       <TouchableOpacity
-        onPress={handleServiceterm}
+        onPress={() => handleServiceterm(serviceTerms)}
         activeOpacity={0.8}
         style={
           checkactive() ? styles.selectboxactive : styles.selectboxinactive
@@ -67,11 +97,67 @@ const quotes = (props: Props) => {
               : styles.selectboxtextinactive
           }
         >
-          {item.label}
+          {serviceTerms}
         </Text>
       </TouchableOpacity>
     );
   };
+
+  const getServices = async () => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    try {
+      const response = await API.get("services", ``, myInit);
+      setServices(response.services);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getSingleService = async (id: string) => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    try {
+      const response = await API.get("services", `/${id}`, myInit);
+      setSingleServiceItem(response);
+      const states = response.locations.map((item: any) => item.state_name);
+      const uniqueStates = new Set(states);
+
+      const uniqueStatesArray = [...uniqueStates];
+      const stateNames = uniqueStatesArray.map((item: any) => ({
+        label: item,
+        value: item,
+      }));
+      setStates(stateNames);
+      console.log(stateNames);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    const service = services.find((s) => s.service_name === selectedService);
+    setServiceItems(service?.items);
+
+    if (service) {
+      getSingleService(service?.id);
+
+      setServiceTerms(service?.service_frequency);
+    }
+  }, [selectedService]);
+  useEffect(() => {
+    getServices();
+  }, []);
   return (
     <SafeAreaView style={{ backgroundColor: Colors.primary }}>
       <StatusBar style="light" />
@@ -81,7 +167,6 @@ const quotes = (props: Props) => {
           globalstyles.rowview,
           {
             paddingHorizontal: 25,
-            justifyContent: "space-between",
             marginTop: 22,
           },
         ]}
@@ -95,31 +180,12 @@ const quotes = (props: Props) => {
             fontSize: 20,
             lineHeight: 24,
             color: "#fff",
+            flex: 1,
+            textAlign: "center",
           }}
         >
           Get Quote
         </Text>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => router.push("items")}
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: 5,
-            paddingHorizontal: 9,
-            paddingVertical: 6,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: Fonts.nun700,
-              fontSize: 12,
-              lineHeight: 14,
-              color: Colors.primary,
-            }}
-          >
-            All Items
-          </Text>
-        </TouchableOpacity>
       </View>
       {/* body */}
       <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
@@ -131,8 +197,8 @@ const quotes = (props: Props) => {
               <Text style={styles.label}>Service</Text>
               <View style={styles.inputcon}>
                 <RNPickerSelect
-                  onValueChange={(value) => setSelectedValue(value)}
-                  items={items}
+                  onValueChange={(value) => setSelectedService(value)}
+                  items={serviceNames}
                   useNativeAndroidPickerStyle={false}
                   placeholder={{ label: "Select Service", color: "#64748B" }}
                   Icon={() => {
@@ -146,6 +212,48 @@ const quotes = (props: Props) => {
                   }}
                 />
               </View>
+              <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
+                <View
+                  style={[
+                    globalstyles.rowview,
+                    { justifyContent: "space-between" },
+                  ]}
+                >
+                  <Text
+                    style={{
+                      fontFamily: Fonts.pop400,
+                      fontSize: 12,
+                      lineHeight: 22,
+                      color: "#64748B",
+                    }}
+                  >
+                    Items
+                  </Text>
+                  {/* <TouchableOpacity
+                    onPress={toggleDropdown}
+                    activeOpacity={0.8}
+                  >
+                    <FontAwesome6 name="angle-down" size={24} color="#64748B" />
+                  </TouchableOpacity> */}
+                </View>
+                <Animated.View
+                  style={[styles.dropdownContent, { minHeight: animation }]}
+                >
+                  <ScrollView>
+                    {serviceItems &&
+                      serviceItems.map(
+                        (item: any, index: React.Key | null | undefined) => (
+                          <View style={{ marginBottom: 10 }} key={index}>
+                            <Itemcard
+                              title={item.name}
+                              content={item.description}
+                            />
+                          </View>
+                        )
+                      )}
+                  </ScrollView>
+                </Animated.View>
+              </TouchableOpacity>
             </View>
           </View>
           {/* address */}
@@ -187,19 +295,56 @@ const quotes = (props: Props) => {
               +Add New Address
             </Text>
           </View>
+          {/* state and city */}
+          <View style={[globalstyles.rowview, { gap: 10 }]}>
+            <View style={{ gap: 5, flex: 1 }}>
+              <Text style={styles.label}>State</Text>
+              <View style={[styles.inputcon]}>
+                <RNPickerSelect
+                  onValueChange={(value) => setSelectedService(value)}
+                  items={states}
+                  useNativeAndroidPickerStyle={false}
+                  placeholder={{ label: "Select State", color: "#64748B" }}
+                  Icon={() => {
+                    return (
+                      <FontAwesome6
+                        name="angle-down"
+                        size={24}
+                        color="#64748B"
+                      />
+                    );
+                  }}
+                />
+              </View>
+            </View>
+            <View style={{ gap: 5, flex: 1 }}>
+              <Text style={styles.label}>City</Text>
+              <View style={[styles.inputcon]}>
+                <RNPickerSelect
+                  onValueChange={(value) => setSelectedService(value)}
+                  items={serviceNames}
+                  useNativeAndroidPickerStyle={false}
+                  placeholder={{ label: "Select City", color: "#64748B" }}
+                  Icon={() => {
+                    return (
+                      <FontAwesome6
+                        name="angle-down"
+                        size={24}
+                        color="#64748B"
+                      />
+                    );
+                  }}
+                />
+              </View>
+            </View>
+          </View>
           {/* Please select the service term */}
           <View style={{ gap: 10 }}>
             <Text style={styles.coloredheader}>
               Please select the service term
             </Text>
             <View>
-              <FlatList
-                ref={selectboxref}
-                data={servicterms}
-                renderItem={Selectbox}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              />
+              <Selectbox />
             </View>
           </View>
           {/* firstname & lastname */}
@@ -286,6 +431,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: "#E2E8F0",
     minWidth: 75,
+    maxWidth: 150,
     marginRight: 8,
   },
   selectboxactive: {
@@ -293,6 +439,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: Colors.primary,
     minWidth: 75,
+    maxWidth: 150,
     marginRight: 8,
   },
   selectboxtextinactive: {
@@ -311,11 +458,27 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     borderRadius: 40.5,
     paddingVertical: 19,
+    marginBottom: 70,
   },
   btntext: {
     color: "#fff",
     fontFamily: Fonts.pop600,
     fontSize: 14,
     textAlign: "center",
+  },
+  dropdownContent: {
+    // overflow: "scroll",
+    // backgroundColor: "red",
+    // borderWidth: 1,
+    marginTop: 10,
+    borderColor: "#ccc",
+  },
+  contentText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "center",
   },
 });
