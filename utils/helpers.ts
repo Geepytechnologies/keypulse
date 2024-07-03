@@ -13,4 +13,7 @@ export class Helpers {
 
     return formattedDate;
   }
+  static namify = (field: any) => {
+    return field.replace(/_/g, " ");
+  };
 }

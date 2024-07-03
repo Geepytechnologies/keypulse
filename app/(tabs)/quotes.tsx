@@ -2,7 +2,9 @@ import {
   Animated,
   Button,
   FlatList,
+  KeyboardAvoidingView,
   LayoutChangeEvent,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,6 +25,9 @@ import Radiofill from "@/assets/images/icons/radio-fill.svg";
 import RadioOutline from "@/assets/images/icons/radio-outline.svg";
 import { API, Auth } from "aws-amplify";
 import Itemcard from "@/components/cards/Itemcard";
+import GenderBox from "@/components/GenderBox";
+import { Helpers } from "@/utils/helpers";
+import { dropdownData } from "@/utils/dropdownOptions";
 
 type Props = {};
 
@@ -56,20 +61,40 @@ const quotes = (props: Props) => {
     }).start();
     setExpanded(!expanded);
   };
-  const [selectedLanguage, setSelectedLanguage] = useState();
   const [selectedService, setSelectedService] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [address, setAddress] = useState(null);
   const [services, setServices] = useState<IServiceDTO[]>([]);
   const [serviceItems, setServiceItems] = useState<any>([]);
   const [serviceTerms, setServiceTerms] = useState("Choose Service");
-  const [singleServiceItem, setSingleServiceItem] = useState();
+  const [cities, setCities] = useState<any>({});
   const [states, setStates] = useState<any>({});
   const serviceNames = services.map((service) => ({
     label: service.service_name,
     value: service.service_name,
   }));
-
+  const [servicedetails, setServicedetails] = useState<any>({
+    service: {},
+    items: [],
+    options: [],
+    fields: [],
+    locations: [],
+    frequencies: [],
+  });
+  const [formDetails, setFormDetails] = useState({
+    state: "",
+    location_id: "",
+    city_name: "",
+    service_id: "",
+    service_term: "",
+    recipient_firstname: "",
+    recipient_lastname: "",
+    recipient_age: "",
+    recipient_address1: "",
+    recipient_address2: "",
+    recipient_city: "",
+    recipient_state: "",
+    recipient_country: "IN",
+    recipient_phone: "",
+  });
   const [serviceterm, setServiceterm] = useState("");
 
   const Selectbox = () => {
@@ -119,6 +144,19 @@ const quotes = (props: Props) => {
       console.log(error);
     }
   };
+  const getFieldSubmitArr = (fields: any) => {
+    let fieldSubmitArr = [];
+    for (let i = 0; i <= fields.length; ++i) {
+      if (i === fields.length) {
+        return fieldSubmitArr;
+      } else {
+        fieldSubmitArr.push({
+          service_field_id: fields[i].id,
+          value: fields[i].field_name,
+        });
+      }
+    }
+  };
   const getSingleService = async (id: string) => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -130,7 +168,6 @@ const quotes = (props: Props) => {
     };
     try {
       const response = await API.get("services", `/${id}`, myInit);
-      setSingleServiceItem(response);
       const states = response.locations.map((item: any) => item.state_name);
       const uniqueStates = new Set(states);
 
@@ -140,110 +177,183 @@ const quotes = (props: Props) => {
         value: item,
       }));
       setStates(stateNames);
-      console.log(stateNames);
+      setServicedetails({
+        service: response.service,
+        items: response.items,
+        options: response.options,
+        fields: response.fields,
+        locations: response.locations,
+        frequencies: response.service.service_frequency,
+      });
     } catch (error) {
       console.log(error);
     }
   };
+  const handleChange = (name: string, value: any) => {
+    if (name == "city") {
+      const locationdata = servicedetails.locations.filter(
+        (loc: { city: string; state_name: string }) =>
+          loc.city === value && loc.state_name === formDetails.state
+      );
+      setFormDetails({
+        ...formDetails,
+        city_name: locationdata[0]?.city,
+        location_id: locationdata[0]?.location_id,
+      });
+    } else {
+      setFormDetails({ ...formDetails, [name]: value });
+    }
+  };
+
+  // get Cities
+  useEffect(() => {
+    const cities = servicedetails.locations
+      .filter(
+        (loc: { state_name: string }) => loc.state_name == formDetails.state
+      )
+      .map((item: any) => item.city);
+    const uniqueCities = new Set(cities);
+
+    const uniqueCitiesArray = [...uniqueCities];
+    const cityNames = uniqueCitiesArray.map((item: any) => ({
+      label: item,
+      value: item,
+    }));
+    const updatedCityNames = [...cityNames, { label: "Other", value: "Other" }];
+    setCities(updatedCityNames);
+  }, [formDetails.state]);
+
+  // submit form
+  const handleSubmit = async () => {
+    const quote_items = servicedetails.options
+      .filter((opt: any) => opt.selected)
+      .map((opt: any) => ({
+        service_id: opt.service_id,
+        service_item_id: opt.id,
+      }));
+    const submitdata = {
+      location_id:
+        formDetails.location_id === "Other" ? "" : formDetails.location_id,
+      city_name: formDetails.city_name,
+      service_id: formDetails.service_id,
+      service_term: serviceterm,
+      recipient_name: `${formDetails.recipient_firstname} ${formDetails.recipient_lastname}`,
+      recipient_age: formDetails.recipient_age,
+      recipient_address_line_1: formDetails.recipient_address1,
+      recipient_address_line_2: formDetails.recipient_address2,
+      recipient_city: formDetails.recipient_city,
+      recipient_state: formDetails.recipient_state,
+      recipient_country: formDetails.recipient_country,
+      recipient_phone_number: formDetails.recipient_phone,
+      quote_items,
+      quote_values: getFieldSubmitArr(servicedetails.fields),
+    };
+    try {
+      console.log(submitdata);
+      // const result = await API.post("quotes", "", submitdata);
+    } catch (error) {}
+  };
+  //get service items
   useEffect(() => {
     const service = services.find((s) => s.service_name === selectedService);
     setServiceItems(service?.items);
 
     if (service) {
+      setFormDetails({ ...formDetails, service_id: service?.id });
+
       getSingleService(service?.id);
 
       setServiceTerms(service?.service_frequency);
     }
   }, [selectedService]);
+
+  //Get all services
   useEffect(() => {
     getServices();
   }, []);
   return (
-    <SafeAreaView style={{ backgroundColor: Colors.primary }}>
-      <StatusBar style="light" />
-      {/* header */}
-      <View
-        style={[
-          globalstyles.rowview,
-          {
-            paddingHorizontal: 25,
-            marginTop: 22,
-          },
-        ]}
-      >
-        <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
-          <Feather name="arrow-left" size={24} color="white" />
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontFamily: Fonts.nun700,
-            fontSize: 20,
-            lineHeight: 24,
-            color: "#fff",
-            flex: 1,
-            textAlign: "center",
-          }}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <SafeAreaView style={{ backgroundColor: Colors.primary }}>
+        <StatusBar style="light" />
+        {/* header */}
+        <View
+          style={[
+            globalstyles.rowview,
+            {
+              paddingHorizontal: 25,
+              marginTop: 22,
+            },
+          ]}
         >
-          Get Quote
-        </Text>
-      </View>
-      {/* body */}
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
-        <View style={{ gap: 25, marginBottom: 40 }}>
-          {/* Please select a service */}
-          <View style={{ gap: 10 }}>
-            <Text style={styles.coloredheader}>Please select a service</Text>
-            <View style={{ gap: 5 }}>
-              <Text style={styles.label}>Service</Text>
-              <View style={styles.inputcon}>
-                <RNPickerSelect
-                  onValueChange={(value) => setSelectedService(value)}
-                  items={serviceNames}
-                  useNativeAndroidPickerStyle={false}
-                  placeholder={{ label: "Select Service", color: "#64748B" }}
-                  Icon={() => {
-                    return (
-                      <FontAwesome6
-                        name="angle-down"
-                        size={24}
-                        color="#64748B"
-                      />
-                    );
-                  }}
-                />
-              </View>
-              <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
-                <View
-                  style={[
-                    globalstyles.rowview,
-                    { justifyContent: "space-between" },
-                  ]}
-                >
-                  <Text
-                    style={{
-                      fontFamily: Fonts.pop400,
-                      fontSize: 12,
-                      lineHeight: 22,
-                      color: "#64748B",
+          <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
+            <Feather name="arrow-left" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontFamily: Fonts.nun700,
+              fontSize: 20,
+              lineHeight: 24,
+              color: "#fff",
+              flex: 1,
+              textAlign: "center",
+            }}
+          >
+            Get Quote
+          </Text>
+        </View>
+        {/* body */}
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+          <View style={{ gap: 25, marginBottom: 40 }}>
+            {/* Please select a service */}
+            <View style={{ gap: 10 }}>
+              <Text style={styles.coloredheader}>Please select a service</Text>
+              <View style={{ gap: 5 }}>
+                <Text style={styles.label}>Service</Text>
+                <View style={styles.inputcon}>
+                  <RNPickerSelect
+                    onValueChange={(value) => setSelectedService(value)}
+                    items={serviceNames}
+                    useNativeAndroidPickerStyle={false}
+                    placeholder={{ label: "Select Service", color: "#64748B" }}
+                    Icon={() => {
+                      return (
+                        <FontAwesome6
+                          name="angle-down"
+                          size={24}
+                          color="#64748B"
+                        />
+                      );
                     }}
-                  >
-                    Items
-                  </Text>
-                  {/* <TouchableOpacity
-                    onPress={toggleDropdown}
-                    activeOpacity={0.8}
-                  >
-                    <FontAwesome6 name="angle-down" size={24} color="#64748B" />
-                  </TouchableOpacity> */}
+                  />
                 </View>
-                <Animated.View
-                  style={[styles.dropdownContent, { minHeight: animation }]}
-                >
-                  <ScrollView>
+                <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
+                  <View
+                    style={[
+                      globalstyles.rowview,
+                      { justifyContent: "space-between" },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: Fonts.pop400,
+                        fontSize: 12,
+                        lineHeight: 22,
+                        color: "#64748B",
+                      }}
+                    >
+                      Items
+                    </Text>
+                  </View>
+                  <View
+                    style={[styles.dropdownContent, { minHeight: animation }]}
+                  >
                     {serviceItems &&
                       serviceItems.map(
                         (item: any, index: React.Key | null | undefined) => (
-                          <View style={{ marginBottom: 10 }} key={index}>
+                          <View style={{ marginBottom: 10 }} key={item.name}>
                             <Itemcard
                               title={item.name}
                               content={item.description}
@@ -251,151 +361,312 @@ const quotes = (props: Props) => {
                           </View>
                         )
                       )}
-                  </ScrollView>
-                </Animated.View>
-              </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          {/* address */}
-          <View style={{ gap: 10 }}>
-            <Text style={styles.coloredheader}>
-              Please provide the address where you need the service
-            </Text>
-            <View style={{ gap: 5 }}>
-              <Text style={styles.label}>Select existing address</Text>
-              <TouchableOpacity activeOpacity={0.7} style={styles.inputcon}>
-                <View
-                  style={[
-                    globalstyles.rowview,
-                    { justifyContent: "space-between" },
-                  ]}
-                >
-                  <Text>123 ACD Drive Hyderabad, 15</Text>
-                  <Radiofill />
+            {/* address */}
+            <View style={{ gap: 10 }}>
+              <Text style={styles.coloredheader}>
+                Please provide the address where you need the service
+              </Text>
+              <View style={{ gap: 5 }}>
+                <Text style={styles.label}>Select existing address</Text>
+                <TouchableOpacity activeOpacity={0.7} style={styles.inputcon}>
+                  <View
+                    style={[
+                      globalstyles.rowview,
+                      { justifyContent: "space-between" },
+                    ]}
+                  >
+                    <Text>123 ACD Drive Hyderabad, 15</Text>
+                    <Radiofill />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={styles.inputcon}>
+                  <View
+                    style={[
+                      globalstyles.rowview,
+                      { justifyContent: "space-between" },
+                    ]}
+                  >
+                    <Text>123 ACD Drive Hyderabad, 15</Text>
+                    <RadioOutline />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <Text
+                style={[
+                  styles.label,
+                  { color: Colors.primary, textAlign: "center" },
+                ]}
+              >
+                +Add New Address
+              </Text>
+            </View>
+            {/* state and city */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              {/* state */}
+              <View style={{ gap: 5, flex: 1 }}>
+                <Text style={styles.label}>State</Text>
+                <View style={[styles.inputcon]}>
+                  <RNPickerSelect
+                    onValueChange={(value) => handleChange("state", value)}
+                    items={states}
+                    useNativeAndroidPickerStyle={false}
+                    placeholder={{ label: "Select State", color: "#64748B" }}
+                    Icon={() => {
+                      return (
+                        <FontAwesome6
+                          name="angle-down"
+                          size={24}
+                          color="#64748B"
+                        />
+                      );
+                    }}
+                  />
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.7} style={styles.inputcon}>
-                <View
-                  style={[
-                    globalstyles.rowview,
-                    { justifyContent: "space-between" },
-                  ]}
-                >
-                  <Text>123 ACD Drive Hyderabad, 15</Text>
-                  <RadioOutline />
+              </View>
+              {/* city */}
+              <View style={{ gap: 5, flex: 1 }}>
+                <Text style={styles.label}>City</Text>
+                <View style={[styles.inputcon]}>
+                  <RNPickerSelect
+                    onValueChange={(value) => handleChange("city", value)}
+                    items={cities}
+                    useNativeAndroidPickerStyle={false}
+                    placeholder={{ label: "Select City", color: "#64748B" }}
+                    Icon={() => {
+                      return (
+                        <FontAwesome6
+                          name="angle-down"
+                          size={24}
+                          color="#64748B"
+                        />
+                      );
+                    }}
+                  />
                 </View>
-              </TouchableOpacity>
+              </View>
             </View>
-            <Text
-              style={[
-                styles.label,
-                { color: Colors.primary, textAlign: "center" },
-              ]}
-            >
-              +Add New Address
-            </Text>
-          </View>
-          {/* state and city */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ gap: 5, flex: 1 }}>
-              <Text style={styles.label}>State</Text>
-              <View style={[styles.inputcon]}>
-                <RNPickerSelect
-                  onValueChange={(value) => setSelectedService(value)}
-                  items={states}
-                  useNativeAndroidPickerStyle={false}
-                  placeholder={{ label: "Select State", color: "#64748B" }}
-                  Icon={() => {
-                    return (
-                      <FontAwesome6
-                        name="angle-down"
-                        size={24}
-                        color="#64748B"
+            {/* other city name */}
+            {/* city */}
+            {formDetails.city_name == "other" && (
+              <View style={{ gap: 5, flex: 1 }}>
+                <Text style={styles.label}>City Name</Text>
+                <View style={[styles.inputcon]}>
+                  <TextInput
+                    onChangeText={(value) => handleChange("city", value)}
+                    placeholder="Enter your city name here"
+                  />
+                </View>
+              </View>
+            )}
+            {/* more parameters */}
+            {servicedetails.fields &&
+              servicedetails.fields.map((item: any, index: any) => (
+                <View style={{ gap: 5, flex: 1 }}>
+                  <Text style={[styles.label, { textTransform: "capitalize" }]}>
+                    {Helpers.namify(item.field_name)}
+                  </Text>
+                  {item.field_type === "text" || item.field_type === "num" ? (
+                    <View style={[styles.inputcon]}>
+                      <RNPickerSelect
+                        onValueChange={() => {}}
+                        items={states}
+                        useNativeAndroidPickerStyle={false}
+                        placeholder={{
+                          label: "Select Condition",
+                          color: "#64748B",
+                        }}
+                        Icon={() => {
+                          return (
+                            <FontAwesome6
+                              name="angle-down"
+                              size={24}
+                              color="#64748B"
+                            />
+                          );
+                        }}
                       />
-                    );
-                  }}
-                />
-              </View>
-            </View>
-            <View style={{ gap: 5, flex: 1 }}>
-              <Text style={styles.label}>City</Text>
-              <View style={[styles.inputcon]}>
-                <RNPickerSelect
-                  onValueChange={(value) => setSelectedService(value)}
-                  items={serviceNames}
-                  useNativeAndroidPickerStyle={false}
-                  placeholder={{ label: "Select City", color: "#64748B" }}
-                  Icon={() => {
-                    return (
-                      <FontAwesome6
-                        name="angle-down"
-                        size={24}
-                        color="#64748B"
+                    </View>
+                  ) : item.field_type === "desc" ? (
+                    <View style={[styles.inputcon]}></View>
+                  ) : item.field_type === "bool" ? (
+                    <View style={[styles.inputcon]}></View>
+                  ) : item.field_type === "dd" ? (
+                    <View style={[styles.inputcon]}>
+                      <RNPickerSelect
+                        onValueChange={() => {}}
+                        items={dropdownData[item.field_name].map(
+                          (item: any) => ({
+                            label: item,
+                            value: item,
+                          })
+                        )}
+                        useNativeAndroidPickerStyle={false}
+                        placeholder={{
+                          label: "Select Condition",
+                          color: "#64748B",
+                        }}
+                        Icon={() => {
+                          return (
+                            <FontAwesome6
+                              name="angle-down"
+                              size={24}
+                              color="#64748B"
+                            />
+                          );
+                        }}
                       />
-                    );
-                  }}
-                />
+                    </View>
+                  ) : item.field_type === "date" ? (
+                    <View style={[styles.inputcon]}></View>
+                  ) : (
+                    <></>
+                  )}
+                </View>
+              ))}
+            {/* Please select the service term */}
+            <View style={{ gap: 10 }}>
+              <Text style={styles.coloredheader}>
+                Please select the service term
+              </Text>
+              <View>
+                <Selectbox />
               </View>
             </View>
-          </View>
-          {/* Please select the service term */}
-          <View style={{ gap: 10 }}>
-            <Text style={styles.coloredheader}>
-              Please select the service term
-            </Text>
-            <View>
-              <Selectbox />
-            </View>
-          </View>
-          {/* firstname & lastname */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>First name</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
+            {/* optional options */}
+            {servicedetails.options && (
+              <View>
+                <Text style={styles.coloredheader}>
+                  Select optional service items
+                </Text>
+
+                {servicedetails.options.map(
+                  (item: any, index: React.Key | null | undefined) => (
+                    <View style={{ marginBottom: 10 }} key={index}>
+                      <Itemcard title={item.name} content={item.description} />
+                    </View>
+                  )
+                )}
+              </View>
+            )}
+            {/* firstname & lastname */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>First name</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_firstname", text)
+                    }
+                    placeholder="Type here"
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Last name</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_lastname", text)
+                    }
+                    placeholder="Type here"
+                  />
+                </View>
               </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Last name</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
+            {/* age */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Age</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) => handleChange("recipient_age", text)}
+                    placeholder="Type here"
+                  />
+                </View>
               </View>
             </View>
-          </View>
-          {/* gender */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Gender</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
+            {/* address line 1 */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Address Line 1</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_address1", text)
+                    }
+                    placeholder="Type here"
+                  />
+                </View>
               </View>
             </View>
-          </View>
-          {/* email */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Email</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
+            {/* address line 2 */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Address Line 2</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_address2", text)
+                    }
+                    placeholder="Type here"
+                  />
+                </View>
               </View>
             </View>
-          </View>
-          {/* phone */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Phone Number</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
+            {/* city */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>City</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_city", text)
+                    }
+                    placeholder="Enter Recipient city here"
+                  />
+                </View>
               </View>
             </View>
+            {/* state */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>State</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_state", text)
+                    }
+                    placeholder="Enter Recipient state here"
+                  />
+                </View>
+              </View>
+            </View>
+            {/* phone */}
+            <View style={[globalstyles.rowview, { gap: 10 }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Phone Number</Text>
+                <View style={styles.inputcon}>
+                  <TextInput
+                    onChangeText={(text) =>
+                      handleChange("recipient_phone", text)
+                    }
+                    placeholder="Type here"
+                  />
+                </View>
+              </View>
+            </View>
+            {/* submit */}
+            <TouchableOpacity onPress={handleSubmit} style={styles.btn}>
+              <Text style={styles.btntext}>Submit</Text>
+            </TouchableOpacity>
           </View>
-          {/* submit */}
-          <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btntext}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
