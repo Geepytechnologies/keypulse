@@ -1,4 +1,5 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,33 +24,32 @@ type Props = {};
 const quotedetails = (props: Props) => {
   const { item }: any = useLocalSearchParams();
   const quoteitems = JSON.parse(item);
-  const [quotecomments, setQuotecomments] = useState([]);
-  const getQuoteComments = async () => {
+  const [loading, setLoading] = useState(false);
+
+  const CancelQuote = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
     });
+    const submitdata = { id: quoteitems.id };
     const myInit = {
+      body: submitdata,
       headers: {
         Authorization: session.idToken.jwtToken,
       },
     };
+    setLoading(true);
     try {
-      const response = await API.get(
-        "quote-comments",
-        `/${quoteitems.id}/${"20"}/${"0"}`,
-        myInit
-      );
-      setQuotecomments(response.quote_comments);
-    } catch (error) {
-      console.log(error);
+      const result = await API.del("quotes", ``, myInit);
+      if (result) {
+        router.push("myquotes");
+      }
+    } catch (e: any) {
+      Alert.alert("Could not cancel quote");
+      console.log("error cancelling quote", e.message);
+    } finally {
+      setLoading(false);
     }
   };
-  useEffect(() => {
-    if (quoteitems.id) {
-      getQuoteComments();
-    }
-  }, []);
-  console.log(quoteitems);
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
@@ -93,9 +93,18 @@ const quotedetails = (props: Props) => {
                 <Text style={styles.comment}>Approve</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity activeOpacity={0.8} style={styles.cancelbtn}>
-              <Text style={styles.cancel}>Cancel</Text>
-            </TouchableOpacity>
+            {quoteitems.status !== "Cancelled" && (
+              <TouchableOpacity
+                onPress={CancelQuote}
+                disabled={loading}
+                activeOpacity={0.8}
+                style={styles.cancelbtn}
+              >
+                <Text style={styles.cancel}>
+                  {loading ? "Cancelling..." : "Cancel"}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         {/* comments */}
