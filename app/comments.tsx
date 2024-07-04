@@ -1,6 +1,8 @@
 import {
   ActivityIndicator,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -27,8 +29,9 @@ const comments = (props: Props) => {
   const [messageText, setMessageText] = useState("");
   const flatListRef = useRef<FlatList | null>(null);
   const [page, setPage] = useState(1);
+  const [replyID, setReplyID] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  const [requestloading, setRequestLoading] = useState(false);
   const getQuoteComments = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -78,20 +81,41 @@ const comments = (props: Props) => {
       flatListRef.current.scrollToEnd({ animated: false });
     }
   };
-  const Action = () => {
-    return (
-      <View style={[globalstyles.rowview, styles.actioncontainer]}>
-        <TextInput
-          onChangeText={(text) => setMessageText(text)}
-          placeholder="Write your message"
-          placeholderTextColor={"#797C7B80"}
-          style={styles.textinput}
-        />
-        <View style={styles.sendcon}>
-          <Text style={styles.send}>Send</Text>
-        </View>
-      </View>
-    );
+  const handleMessageChange = (text: string) => {
+    setMessageText(text);
+  };
+  const validateMessage = (text: string) => {
+    if (text.trim() !== "") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const sendComment = async () => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const submitdata = { quote_id, reply_id: replyID, message: messageText };
+    const myInit = {
+      body: submitdata,
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    setRequestLoading(true);
+    try {
+      if (validateMessage(messageText)) {
+        const result = await API.post("quote-comments", ``, myInit);
+        if (result) {
+          setMessageText("");
+          getQuoteComments();
+        }
+      }
+    } catch (error) {
+      console.log("error from sending message: " + error);
+    } finally {
+      setRequestLoading(false);
+    }
   };
   useEffect(() => {
     getQuoteComments();
@@ -101,56 +125,77 @@ const comments = (props: Props) => {
       style={{ backgroundColor: Colors.primary, flex: 1, paddingBottom: 10 }}
     >
       <StatusBar style="light" />
-      {/* header */}
-      <View
-        style={[
-          globalstyles.rowview,
-          {
-            paddingHorizontal: 25,
-            marginTop: 22,
-          },
-        ]}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
-          <Feather name="arrow-left" size={24} color="white" />
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontFamily: Fonts.nun700,
-            fontSize: 20,
-            lineHeight: 24,
-            color: "#fff",
-            flex: 1,
-            textAlign: "center",
-          }}
+        {/* header */}
+        <View
+          style={[
+            globalstyles.rowview,
+            {
+              paddingHorizontal: 25,
+              marginTop: 22,
+            },
+          ]}
         >
-          Comments
-        </Text>
-      </View>
-      {/* body */}
-      <View style={[styles.body, { display: "flex" }]}>
-        {comments && comments.length > 0 ? (
-          <FlatList
-            ref={flatListRef}
-            data={comments}
-            renderItem={Chatbox}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            inverted={false}
-            onContentSizeChange={handleContentSizeChange}
-            onEndReached={() => setPage(page + 1)}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={
-              loading ? <ActivityIndicator size="large" /> : null
-            }
-          />
-        ) : (
-          <View style={[globalstyles.centerview, { height: "100%" }]}>
-            <Text style={{ textAlign: "center" }}>No Comments Yet</Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
+            <Feather name="arrow-left" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontFamily: Fonts.nun700,
+              fontSize: 20,
+              lineHeight: 24,
+              color: "#fff",
+              flex: 1,
+              textAlign: "center",
+            }}
+          >
+            Comments
+          </Text>
+        </View>
+        {/* body */}
+        <View style={[styles.body, { display: "flex" }]}>
+          {comments && comments.length > 0 ? (
+            <FlatList
+              ref={flatListRef}
+              data={comments}
+              renderItem={Chatbox}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+              inverted={false}
+              onContentSizeChange={handleContentSizeChange}
+              onEndReached={() => setPage(page + 1)}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                loading ? <ActivityIndicator size="large" /> : null
+              }
+            />
+          ) : (
+            <View style={[globalstyles.centerview, { height: "100%" }]}>
+              <Text style={{ textAlign: "center" }}>No Comments Yet</Text>
+            </View>
+          )}
+          <View style={[globalstyles.rowview, styles.actioncontainer]}>
+            <TextInput
+              value={messageText}
+              onChangeText={(text) => handleMessageChange(text)}
+              placeholder="Write your message"
+              placeholderTextColor={"#797C7B80"}
+              style={styles.textinput}
+            />
+            <TouchableOpacity
+              disabled={requestloading}
+              activeOpacity={0.8}
+              onPress={sendComment}
+              style={styles.sendcon}
+            >
+              <Text style={styles.send}>Send</Text>
+            </TouchableOpacity>
           </View>
-        )}
-        <Action />
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

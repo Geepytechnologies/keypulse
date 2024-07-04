@@ -49,6 +49,7 @@ const quotedetails = (props: Props) => {
       getQuoteComments();
     }
   }, []);
+  console.log(quoteitems);
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
@@ -87,9 +88,11 @@ const quotedetails = (props: Props) => {
           <QuotedetailCard item={quoteitems} />
           {/* buttons */}
           <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>
-              <Text style={styles.comment}>Approve</Text>
-            </TouchableOpacity>
+            {quoteitems.status !== "Awaiting Review" && (
+              <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>
+                <Text style={styles.comment}>Approve</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity activeOpacity={0.8} style={styles.cancelbtn}>
               <Text style={styles.cancel}>Cancel</Text>
             </TouchableOpacity>

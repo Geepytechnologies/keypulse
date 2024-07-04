@@ -88,9 +88,7 @@ const QuotedetailCard = ({ item }: Props) => {
                 lineHeight: 18,
               }}
             >
-              {item.status == "Awaiting Customer Approval"
-                ? "Pending"
-                : item.status}
+              {item.status}
             </Text>
           </View>
         </View>

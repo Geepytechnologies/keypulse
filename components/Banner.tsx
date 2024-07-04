@@ -1,4 +1,5 @@
 import {
+  Image,
   ImageBackground,
   Platform,
   StyleSheet,
@@ -18,79 +19,83 @@ type Props = {};
 
 const Banner = (props: Props) => {
   return (
-    <View style={styles.bannercon}>
-      <ImageBackground
-        resizeMode="stretch"
-        style={{ width: "100%", height: 175 }}
-        source={require("@/assets/images/banner.png")}
+    <View style={[styles.bannercon, { height: 175 }]}>
+      <Image
+        source={require("@/assets/images/designelements.png")}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
+      />
+      <View
+        style={[
+          globalstyles.rowview,
+          {
+            height: "100%",
+            paddingLeft: 23,
+            justifyContent: "space-between",
+            gap: 11,
+          },
+        ]}
       >
-        <View
-          style={[
-            globalstyles.rowview,
-            {
-              height: "100%",
-              paddingLeft: 23,
-              justifyContent: "space-between",
-              gap: 11,
-            },
-          ]}
-        >
-          <View style={{ gap: 9 }}>
-            <Text style={{ width: 165 }}>
+        <View style={{ gap: 9, flex: 1 }}>
+          <Text style={{}}>
+            <Text
+              style={[
+                styles.bannertext,
+                {
+                  color: "black",
+                },
+              ]}
+            >
+              A Reliable&nbsp;
+            </Text>
+            <Text style={[styles.bannertext, { color: Colors.primary }]}>
+              personal assistant&nbsp;
+            </Text>
+            <Text
+              style={[
+                styles.bannertext,
+                {
+                  color: "black",
+                },
+              ]}
+            >
+              for your{" "}
               <Text
                 style={[
                   styles.bannertext,
                   {
-                    color: "black",
+                    color: "#545871",
                   },
                 ]}
               >
-                A Reliable personal&nbsp;
-              </Text>
-              <Text style={[styles.bannertext, { color: Colors.primary }]}>
-                personal assistant&nbsp;
-              </Text>
-              <Text
-                style={[
-                  styles.bannertext,
-                  {
-                    color: "black",
-                  },
-                ]}
-              >
-                for your{" "}
-                <Text
-                  style={[
-                    styles.bannertext,
-                    {
-                      color: "#545871",
-                    },
-                  ]}
-                >
-                  family
-                </Text>
+                family
               </Text>
             </Text>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => router.push("(tabs)/quotes")}
-              style={[globalstyles.rowview, styles.button]}
+          </Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => router.push("(tabs)/quotes")}
+            style={[globalstyles.rowview, styles.button]}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 10,
+                fontFamily: Fonts.pop600,
+              }}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 10,
-                  fontFamily: Fonts.pop600,
-                }}
-              >
-                Get Quote
-              </Text>
-              <AngleRight />
-            </TouchableOpacity>
-          </View>
-          <Calendar width={Platform.OS == "ios" ? 150 : 100} />
+              Get Quote
+            </Text>
+            <AngleRight />
+          </TouchableOpacity>
         </View>
-      </ImageBackground>
+        <Calendar width={Platform.OS == "ios" ? 150 : 100} />
+      </View>
     </View>
   );
 };
@@ -99,6 +104,11 @@ export default Banner;
 
 const styles = StyleSheet.create({
   bannercon: {
+    width: "100%",
+    borderColor: "#545871",
+    borderWidth: 2,
+    borderRadius: 13,
+    backgroundColor: "#f0f1f7",
     transform: [{ translateY: -60 }],
   },
   button: {
