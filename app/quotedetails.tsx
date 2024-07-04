@@ -97,10 +97,17 @@ const quotedetails = (props: Props) => {
         </View>
         {/* comments */}
         <View style={{ marginTop: 15 }}>
-          <View style={{ gap: 10 }}>
-            <Link
-              href={"comments"}
-              suppressHighlighting={true}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              router.push({
+                pathname: "comments",
+                params: { quote_id: quoteitems.id },
+              })
+            }
+            style={{ gap: 10 }}
+          >
+            <Text
               style={{
                 fontFamily: Fonts.pop700,
                 fontSize: 12,
@@ -110,8 +117,8 @@ const quotedetails = (props: Props) => {
               }}
             >
               Show Comments
-            </Link>
-          </View>
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

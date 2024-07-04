@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   ScrollView,
   StyleSheet,
@@ -7,10 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Fonts } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
@@ -21,6 +22,13 @@ import { API, Auth } from "aws-amplify";
 type Props = {};
 
 const comments = (props: Props) => {
+  const { quote_id }: any = useLocalSearchParams();
+  const [comments, setComments] = useState([]);
+  const [messageText, setMessageText] = useState("");
+  const flatListRef = useRef<FlatList | null>(null);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const getQuoteComments = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -30,16 +38,19 @@ const comments = (props: Props) => {
         Authorization: session.idToken.jwtToken,
       },
     };
-    const last_datetime = "";
-    const quote_id = "1";
-    const limit = 50;
+    const last_datetime = "0";
+    const limit = 20;
     try {
       const response = await API.get(
         "quote-comments",
         `/${quote_id}/${limit}/${last_datetime}`,
         myInit
       );
-    } catch (error) {}
+      console.log(response);
+      setComments(response.quote_comments.reverse());
+    } catch (error) {
+      console.log(error);
+    }
   };
   const chatdata = [
     {
@@ -62,10 +73,16 @@ const comments = (props: Props) => {
         "If there was a way I could grow moneyon trees I definitely would not hesitate.",
     },
   ];
+  const handleContentSizeChange = () => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: false });
+    }
+  };
   const Action = () => {
     return (
       <View style={[globalstyles.rowview, styles.actioncontainer]}>
         <TextInput
+          onChangeText={(text) => setMessageText(text)}
           placeholder="Write your message"
           placeholderTextColor={"#797C7B80"}
           style={styles.textinput}
@@ -76,6 +93,9 @@ const comments = (props: Props) => {
       </View>
     );
   };
+  useEffect(() => {
+    getQuoteComments();
+  }, []);
   return (
     <SafeAreaView
       style={{ backgroundColor: Colors.primary, flex: 1, paddingBottom: 10 }}
@@ -109,17 +129,26 @@ const comments = (props: Props) => {
       </View>
       {/* body */}
       <View style={[styles.body, { display: "flex" }]}>
-        <FlatList
-          data={chatdata}
-          renderItem={Chatbox}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          inverted={false}
-          //   ListFooterComponent={<Action />}
-        />
-        {/* {chatdata.map((item, index) => (
-          <Chatbox item={item} />
-        ))} */}
+        {comments && comments.length > 0 ? (
+          <FlatList
+            ref={flatListRef}
+            data={comments}
+            renderItem={Chatbox}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            inverted={false}
+            onContentSizeChange={handleContentSizeChange}
+            onEndReached={() => setPage(page + 1)}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              loading ? <ActivityIndicator size="large" /> : null
+            }
+          />
+        ) : (
+          <View style={[globalstyles.centerview, { height: "100%" }]}>
+            <Text style={{ textAlign: "center" }}>No Comments Yet</Text>
+          </View>
+        )}
         <Action />
       </View>
     </SafeAreaView>
@@ -166,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     gap: 12,
     backgroundColor: "#F3F6F6",
-    marginTop: 20,
+    marginTop: "auto",
   },
   sendcon: {
     backgroundColor: Colors.primary,

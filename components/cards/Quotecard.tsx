@@ -83,18 +83,28 @@ const Quotecard = ({ item }: Props) => {
             Exp.{" "}
             <Text style={{ fontFamily: Fonts.pop700 }}> {item.expired_on}</Text>
           </Text>
-          <Link
-            suppressHighlighting={true}
-            href="comments"
-            style={{
-              fontFamily: Fonts.pop600,
-              fontSize: 12,
-              lineHeight: 18,
-              textDecorationLine: "underline",
-            }}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              router.push({
+                pathname: "comments",
+                params: { quote_id: item.id },
+              })
+            }
+            style={{ gap: 10 }}
           >
-            Show Comments
-          </Link>
+            <Text
+              style={{
+                fontFamily: Fonts.pop700,
+                fontSize: 12,
+                color: "#545871",
+                textDecorationLine: "underline",
+                textAlign: "center",
+              }}
+            >
+              Show Comments
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
       <View style={{ gap: 11 }}>

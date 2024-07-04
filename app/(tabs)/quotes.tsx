@@ -28,6 +28,8 @@ import Itemcard from "@/components/cards/Itemcard";
 import GenderBox from "@/components/GenderBox";
 import { Helpers } from "@/utils/helpers";
 import { dropdownData } from "@/utils/dropdownOptions";
+import SelectableItemCard from "@/components/cards/SelectableItemCard";
+import Toast from "react-native-toast-message";
 
 type Props = {};
 
@@ -71,6 +73,7 @@ const quotes = (props: Props) => {
   const serviceNames = services.map((service) => ({
     label: service.service_name,
     value: service.service_name,
+    key: service.id,
   }));
   const [servicedetails, setServicedetails] = useState<any>({
     service: {},
@@ -80,6 +83,7 @@ const quotes = (props: Props) => {
     locations: [],
     frequencies: [],
   });
+  const [additionalFields, setAdditionalFields] = useState({ date: "" });
   const [formDetails, setFormDetails] = useState({
     state: "",
     location_id: "",
@@ -171,6 +175,7 @@ const quotes = (props: Props) => {
   const Selectbox = () => {
     const handleServiceterm = (item: string) => {
       setServiceterm(item);
+      setFormDetails({ ...formDetails, service_term: item });
     };
     const checkactive = () => {
       if (serviceTerms === serviceterm) {
@@ -243,9 +248,10 @@ const quotes = (props: Props) => {
       const uniqueStates = new Set(states);
 
       const uniqueStatesArray = [...uniqueStates];
-      const stateNames = uniqueStatesArray.map((item: any) => ({
+      const stateNames = uniqueStatesArray.map((item: any, index: any) => ({
         label: item,
         value: item,
+        key: index,
       }));
       setStates(stateNames);
       setServicedetails({
@@ -274,6 +280,14 @@ const quotes = (props: Props) => {
     } else {
       setFormDetails({ ...formDetails, [name]: value });
     }
+  };
+
+  const toggleItemSelected = (idx: any) => {
+    const updatedOptions = servicedetails.options.map(
+      (option: { selected: any }, index: number) =>
+        index === idx ? { ...option, selected: !option.selected } : option
+    );
+    setServicedetails({ ...servicedetails, options: updatedOptions });
   };
 
   // get Cities
@@ -320,12 +334,42 @@ const quotes = (props: Props) => {
       quote_items,
       quote_values: getFieldSubmitArr(servicedetails.fields),
     };
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      body: submitdata,
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    setLoading(true);
     try {
       console.log(submitdata);
       if (validateForm()) {
+        const result = await API.post("quotes", "", myInit);
+        if (result) {
+          router.push("myquotes");
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Quote Saved",
+          });
+        }
       }
-      // const result = await API.post("quotes", "", submitdata);
-    } catch (error) {}
+    } catch (error: any) {
+      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Oops!!!",
+        text2: error.message || "Failed to submit quote",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleAdditionalFields = (key: string, value: any) => {
+    setAdditionalFields({ ...additionalFields, [key]: value });
   };
   //get service items
   useEffect(() => {
@@ -427,7 +471,7 @@ const quotes = (props: Props) => {
                     {serviceItems &&
                       serviceItems.map(
                         (item: any, index: React.Key | null | undefined) => (
-                          <View style={{ marginBottom: 10 }} key={item.name}>
+                          <View style={{ marginBottom: 10 }} key={item.id}>
                             <Itemcard
                               title={item.name}
                               content={item.description}
@@ -604,7 +648,14 @@ const quotes = (props: Props) => {
                       />
                     </View>
                   ) : item.field_type === "date" ? (
-                    <View style={[styles.inputcon]}></View>
+                    <View style={[styles.inputcon]}>
+                      <TextInput
+                        placeholder="Add Date"
+                        onChangeText={(text) =>
+                          handleAdditionalFields("date", text)
+                        }
+                      />
+                    </View>
                   ) : (
                     <></>
                   )}
@@ -623,16 +674,21 @@ const quotes = (props: Props) => {
               )}
             </View>
             {/* optional options */}
-            {servicedetails.options && (
+            {servicedetails.options.length > 0 && (
               <View>
-                <Text style={styles.coloredheader}>
+                <Text style={[styles.coloredheader, { marginBottom: 10 }]}>
                   Select optional service items
                 </Text>
 
                 {servicedetails.options.map(
                   (item: any, index: React.Key | null | undefined) => (
                     <View style={{ marginBottom: 10 }} key={index}>
-                      <Itemcard title={item.name} content={item.description} />
+                      <SelectableItemCard
+                        selected={item.selected}
+                        toggleSelection={() => toggleItemSelected(index)}
+                        title={item.name}
+                        content={item.description}
+                      />
                     </View>
                   )
                 )}

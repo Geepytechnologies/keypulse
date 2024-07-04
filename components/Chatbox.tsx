@@ -9,15 +9,20 @@ interface Chat {
   item: {
     id: string;
     message: string;
+    direction: boolean;
+    date: string;
   };
 }
 
 const Chatbox = ({ item }: Chat) => {
   let ismyMessage;
   const isMyMessage = () => {
-    return item.id == "2";
+    return item.direction == false;
   };
   ismyMessage = isMyMessage();
+  const date = new Date(item.date);
+
+  const localTime = date.toLocaleTimeString([], { hour12: true });
   return (
     <>
       {/* notmymessage */}
@@ -59,7 +64,7 @@ const Chatbox = ({ item }: Chat) => {
             ]}
           >
             <View style={{ flex: 1 }}>
-              <Text style={styles.timeforme}>09:25:01 AM</Text>
+              <Text style={styles.timeforme}>{localTime}</Text>
 
               <Text style={styles.chatconforme}>{item.message}</Text>
             </View>

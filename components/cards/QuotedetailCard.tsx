@@ -11,6 +11,18 @@ type Props = {
 };
 
 const QuotedetailCard = ({ item }: Props) => {
+  const statuscolor = (item: any) => {
+    switch (item.status) {
+      case "Approved":
+        return Status.Approved;
+      case "Awaiting Customer Approval":
+        return Status.Pending;
+      case "Rejected":
+        return Status.Rejected;
+      default:
+        return Status.Pending;
+    }
+  };
   return (
     <View style={[styles.container, { margin: 5 }]}>
       <View style={[globalstyles.rowview, { justifyContent: "space-between" }]}>
@@ -61,11 +73,11 @@ const QuotedetailCard = ({ item }: Props) => {
 
           <View
             style={{
-              backgroundColor: Status.Approved,
+              backgroundColor: statuscolor(item),
               paddingVertical: 10,
               paddingHorizontal: 7,
               borderRadius: 5,
-              maxWidth: 75,
+              maxWidth: 150,
             }}
           >
             <Text
@@ -99,7 +111,7 @@ const QuotedetailCard = ({ item }: Props) => {
             textAlign: "center",
           }}
         >
-          {item.amount}
+          {item.amount || "0.00"}
         </Text>
       </View>
     </View>
