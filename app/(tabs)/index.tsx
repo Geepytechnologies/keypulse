@@ -46,7 +46,6 @@ const HomeScreen = () => {
   const Backdrop = () => {
     return <View style={{ flex: 1, backgroundColor: "black" }}></View>;
   };
-
   const getQuotes = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -58,7 +57,10 @@ const HomeScreen = () => {
     };
     try {
       const res = await API.get("quotes", "", myInit);
-      setQuotes(res.quotes);
+      const filteredquotes = res.quotes.filter(
+        (q: any) => q.status !== "Approved"
+      );
+      setQuotes(filteredquotes);
       // console.log("myresponse", res);
     } catch (error) {
       console.log(error);

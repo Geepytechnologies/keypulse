@@ -122,7 +122,7 @@ const Quotecard = ({ item }: Props) => {
           <Text
             style={{ fontSize: 14, fontFamily: Fonts.pop600, color: "#fff" }}
           >
-            {item.amount}
+            {item.amount || "00.00"}
           </Text>
         </View>
         <View
@@ -133,7 +133,7 @@ const Quotecard = ({ item }: Props) => {
               paddingVertical: 10,
               paddingHorizontal: 7,
               borderRadius: 5,
-              maxWidth: 75,
+              maxWidth: 150,
             },
           ]}
         >
@@ -145,9 +145,7 @@ const Quotecard = ({ item }: Props) => {
               lineHeight: 18,
             }}
           >
-            {item.status == "Awaiting Customer Approval"
-              ? "Pending"
-              : item.status}
+            {item.status}
           </Text>
         </View>
       </View>

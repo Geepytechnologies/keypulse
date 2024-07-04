@@ -16,10 +16,31 @@ import { Colors } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Chatbox from "@/components/Chatbox";
+import { API, Auth } from "aws-amplify";
 
 type Props = {};
 
 const comments = (props: Props) => {
+  const getQuoteComments = async () => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    const last_datetime = "";
+    const quote_id = "1";
+    const limit = 50;
+    try {
+      const response = await API.get(
+        "quote-comments",
+        `/${quote_id}/${limit}/${last_datetime}`,
+        myInit
+      );
+    } catch (error) {}
+  };
   const chatdata = [
     {
       id: "1",

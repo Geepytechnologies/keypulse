@@ -61,6 +61,7 @@ const quotes = (props: Props) => {
     }).start();
     setExpanded(!expanded);
   };
+  const [loading, setLoading] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [services, setServices] = useState<IServiceDTO[]>([]);
   const [serviceItems, setServiceItems] = useState<any>([]);
@@ -96,6 +97,76 @@ const quotes = (props: Props) => {
     recipient_phone: "",
   });
   const [serviceterm, setServiceterm] = useState("");
+  const [errors, setErrors] = useState<{
+    state: string;
+    location_id: string;
+    city_name: string;
+    service_term: string;
+    recipient_firstname: string;
+    recipient_lastname: string;
+    recipient_age: string;
+    recipient_address1: string;
+    recipient_city: string;
+    recipient_state: string;
+    recipient_phone: string;
+  }>();
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors: any = {};
+
+    if (!formDetails.state.trim()) {
+      newErrors.state = "Please select state to continue";
+      valid = false;
+    }
+
+    if (!formDetails.location_id.trim()) {
+      newErrors.location_id = "location_id is required";
+      valid = false;
+    }
+    if (
+      formDetails.location_id.trim() == "Other" &&
+      !formDetails.city_name.trim()
+    ) {
+      newErrors.city_name = "City Name is required";
+      valid = false;
+    }
+    if (!formDetails.service_term.trim()) {
+      newErrors.service_term = "Please select a service term";
+      valid = false;
+    }
+    if (!formDetails.recipient_firstname.trim()) {
+      newErrors.recipient_firstname = "Please enter recipient first name";
+      valid = false;
+    }
+    if (!formDetails.recipient_lastname.trim()) {
+      newErrors.recipient_lastname = "Please enter recipient last name";
+      valid = false;
+    }
+    if (!formDetails.recipient_age.trim()) {
+      newErrors.recipient_age = "Please enter recipient age";
+      valid = false;
+    }
+    if (!formDetails.recipient_address1.trim()) {
+      newErrors.recipient_address1 = "Please enter recipient Address line 1";
+      valid = false;
+    }
+    if (!formDetails.recipient_city.trim()) {
+      newErrors.recipient_city = "Please enter recipient City";
+      valid = false;
+    }
+    if (!formDetails.recipient_state.trim()) {
+      newErrors.recipient_state = "Please enter recipient State";
+      valid = false;
+    }
+    if (!formDetails.recipient_phone.trim()) {
+      newErrors.recipient_phone = "Please enter recipient Phone Number";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const Selectbox = () => {
     const handleServiceterm = (item: string) => {
@@ -222,6 +293,7 @@ const quotes = (props: Props) => {
     const updatedCityNames = [...cityNames, { label: "Other", value: "Other" }];
     setCities(updatedCityNames);
   }, [formDetails.state]);
+  //validation
 
   // submit form
   const handleSubmit = async () => {
@@ -250,6 +322,8 @@ const quotes = (props: Props) => {
     };
     try {
       console.log(submitdata);
+      if (validateForm()) {
+      }
       // const result = await API.post("quotes", "", submitdata);
     } catch (error) {}
   };
@@ -366,7 +440,7 @@ const quotes = (props: Props) => {
               </View>
             </View>
             {/* address */}
-            <View style={{ gap: 10 }}>
+            {/* <View style={{ gap: 10 }}>
               <Text style={styles.coloredheader}>
                 Please provide the address where you need the service
               </Text>
@@ -403,7 +477,7 @@ const quotes = (props: Props) => {
               >
                 +Add New Address
               </Text>
-            </View>
+            </View> */}
             {/* state and city */}
             <View style={[globalstyles.rowview, { gap: 10 }]}>
               {/* state */}
@@ -426,6 +500,9 @@ const quotes = (props: Props) => {
                     }}
                   />
                 </View>
+                {errors && errors.state && (
+                  <Text style={globalstyles.error}>{errors.state}</Text>
+                )}
               </View>
               {/* city */}
               <View style={{ gap: 5, flex: 1 }}>
@@ -447,6 +524,9 @@ const quotes = (props: Props) => {
                     }}
                   />
                 </View>
+                {errors && errors.location_id && (
+                  <Text style={globalstyles.error}>{errors.location_id}</Text>
+                )}
               </View>
             </View>
             {/* other city name */}
@@ -460,6 +540,9 @@ const quotes = (props: Props) => {
                     placeholder="Enter your city name here"
                   />
                 </View>
+                {errors && errors.city_name && (
+                  <Text style={globalstyles.error}>{errors.city_name}</Text>
+                )}
               </View>
             )}
             {/* more parameters */}
@@ -535,6 +618,9 @@ const quotes = (props: Props) => {
               <View>
                 <Selectbox />
               </View>
+              {errors && errors.service_term && (
+                <Text style={globalstyles.error}>{errors.service_term}</Text>
+              )}
             </View>
             {/* optional options */}
             {servicedetails.options && (
@@ -564,6 +650,11 @@ const quotes = (props: Props) => {
                     placeholder="Type here"
                   />
                 </View>
+                {errors && errors.recipient_firstname && (
+                  <Text style={globalstyles.error}>
+                    {errors.recipient_firstname}
+                  </Text>
+                )}
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Last name</Text>
@@ -575,6 +666,11 @@ const quotes = (props: Props) => {
                     placeholder="Type here"
                   />
                 </View>
+                {errors && errors.recipient_lastname && (
+                  <Text style={globalstyles.error}>
+                    {errors.recipient_lastname}
+                  </Text>
+                )}
               </View>
             </View>
             {/* age */}
@@ -587,6 +683,9 @@ const quotes = (props: Props) => {
                     placeholder="Type here"
                   />
                 </View>
+                {errors && errors.recipient_age && (
+                  <Text style={globalstyles.error}>{errors.recipient_age}</Text>
+                )}
               </View>
             </View>
             {/* address line 1 */}
@@ -601,6 +700,11 @@ const quotes = (props: Props) => {
                     placeholder="Type here"
                   />
                 </View>
+                {errors && errors.recipient_address1 && (
+                  <Text style={globalstyles.error}>
+                    {errors.recipient_address1}
+                  </Text>
+                )}
               </View>
             </View>
             {/* address line 2 */}
@@ -629,6 +733,11 @@ const quotes = (props: Props) => {
                     placeholder="Enter Recipient city here"
                   />
                 </View>
+                {errors && errors.recipient_city && (
+                  <Text style={globalstyles.error}>
+                    {errors.recipient_city}
+                  </Text>
+                )}
               </View>
             </View>
             {/* state */}
@@ -643,6 +752,11 @@ const quotes = (props: Props) => {
                     placeholder="Enter Recipient state here"
                   />
                 </View>
+                {errors && errors.recipient_state && (
+                  <Text style={globalstyles.error}>
+                    {errors.recipient_state}
+                  </Text>
+                )}
               </View>
             </View>
             {/* phone */}
@@ -657,11 +771,22 @@ const quotes = (props: Props) => {
                     placeholder="Type here"
                   />
                 </View>
+                {errors && errors.recipient_phone && (
+                  <Text style={globalstyles.error}>
+                    {errors.recipient_phone}
+                  </Text>
+                )}
               </View>
             </View>
             {/* submit */}
-            <TouchableOpacity onPress={handleSubmit} style={styles.btn}>
-              <Text style={styles.btntext}>Submit</Text>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={handleSubmit}
+              style={styles.btn}
+            >
+              <Text style={styles.btntext}>
+                {loading ? "Processing..." : "Submit"}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
