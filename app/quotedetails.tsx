@@ -88,11 +88,12 @@ const quotedetails = (props: Props) => {
           <QuotedetailCard item={quoteitems} />
           {/* buttons */}
           <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
-            {quoteitems.status !== "Awaiting Review" && (
-              <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>
-                <Text style={styles.comment}>Approve</Text>
-              </TouchableOpacity>
-            )}
+            {quoteitems.status !== "Awaiting Review" ||
+              ("Cancelled" && (
+                <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>
+                  <Text style={styles.comment}>Approve</Text>
+                </TouchableOpacity>
+              ))}
             {quoteitems.status !== "Cancelled" && (
               <TouchableOpacity
                 onPress={CancelQuote}

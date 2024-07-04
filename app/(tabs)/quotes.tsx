@@ -300,9 +300,10 @@ const quotes = (props: Props) => {
     const uniqueCities = new Set(cities);
 
     const uniqueCitiesArray = [...uniqueCities];
-    const cityNames = uniqueCitiesArray.map((item: any) => ({
+    const cityNames = uniqueCitiesArray.map((item: any, index: any) => ({
       label: item,
       value: item,
+      key: index,
     }));
     const updatedCityNames = [...cityNames, { label: "Other", value: "Other" }];
     setCities(updatedCityNames);
@@ -626,9 +627,10 @@ const quotes = (props: Props) => {
                       <RNPickerSelect
                         onValueChange={() => {}}
                         items={dropdownData[item.field_name].map(
-                          (item: any) => ({
+                          (item: any, index: any) => ({
                             label: item,
                             value: item,
+                            key: index,
                           })
                         )}
                         useNativeAndroidPickerStyle={false}

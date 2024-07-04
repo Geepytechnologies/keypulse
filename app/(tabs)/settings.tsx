@@ -22,6 +22,7 @@ import Subscription from "@/assets/images/icons/subscription-thick.svg";
 import Info from "@/assets/images/icons/info.svg";
 import Logout from "@/assets/images/icons/logout-thick.svg";
 import Flag from "@/assets/images/icons/flag.svg";
+import StripePayment from "@/components/StripePayment";
 
 type Props = {};
 
@@ -55,6 +56,7 @@ const settings = (props: Props) => {
           Settings
         </Text>
       </View>
+      <StripePayment />
       {/* body */}
       <ScrollView style={styles.body}>
         <View style={{ gap: 26 }}>
