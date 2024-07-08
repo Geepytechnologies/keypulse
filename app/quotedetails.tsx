@@ -18,6 +18,7 @@ import Quotecard, { Status } from "@/components/cards/Quotecard";
 import QuotedetailCard from "@/components/cards/QuotedetailCard";
 import Commentbox from "@/components/Commentbox";
 import { API, Auth } from "aws-amplify";
+import { useStripe } from "@stripe/stripe-react-native";
 
 type Props = {};
 
@@ -25,7 +26,52 @@ const quotedetails = (props: Props) => {
   const { item }: any = useLocalSearchParams();
   const quoteitems = JSON.parse(item);
   const [loading, setLoading] = useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [secret, setSecret] = useState("");
 
+  const onCheckout = async () => {
+    await InitializePaymentsheet();
+    const { error: paymentsheetError } = await presentPaymentSheet();
+    if (paymentsheetError) {
+      // console.error("Payment failed:", paymentsheetError);
+      // Alert.alert("Payment failed", paymentsheetError.message);
+    } else {
+      console.log("Payment successful!");
+      Alert.alert("Payment successful", "Your payment was successful.");
+    }
+  };
+  const InitializePaymentsheet = async () => {
+    // console.log(secret);
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "keypulse",
+      paymentIntentClientSecret: secret,
+      returnURL: "keypulse://stripe-redirect",
+    });
+    if (error) {
+      console.warn("frominitialize", error.message);
+    }
+  };
+
+  const fetchClientSecret = async () => {
+    try {
+      const session: any = await Auth.currentSession().catch((e) => {
+        console.log(e);
+      });
+      const myInit = {
+        body: { id: quoteitems.id },
+        headers: { Authorization: session.idToken.jwtToken },
+      };
+      const res = await API.post("quote_secret", ``, myInit);
+      console.log(res);
+      setSecret(res.paymentIntent);
+      return res.paymentIntent;
+    } catch (error: any) {
+      console.error("Error fetching client secret:", error.message);
+    }
+  };
+  useEffect(() => {
+    fetchClientSecret();
+  }, []);
   const CancelQuote = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -50,6 +96,7 @@ const quotedetails = (props: Props) => {
       setLoading(false);
     }
   };
+  console.log(quoteitems.status);
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
@@ -88,12 +135,16 @@ const quotedetails = (props: Props) => {
           <QuotedetailCard item={quoteitems} />
           {/* buttons */}
           <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
-            {quoteitems.status !== "Awaiting Review" ||
-              ("Cancelled" && (
-                <TouchableOpacity activeOpacity={0.8} style={styles.commentbtn}>
+            {quoteitems.status == "Awaiting Customer Approval" &&
+              quoteitems.status !== "Cancelled" && (
+                <TouchableOpacity
+                  onPress={onCheckout}
+                  activeOpacity={0.8}
+                  style={styles.commentbtn}
+                >
                   <Text style={styles.comment}>Approve</Text>
                 </TouchableOpacity>
-              ))}
+              )}
             {quoteitems.status !== "Cancelled" && (
               <TouchableOpacity
                 onPress={CancelQuote}

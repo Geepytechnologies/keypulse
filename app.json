@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.jpg",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.geepytech.keypulse"
     },
     "web": {
       "bundler": "metro",
@@ -31,7 +32,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "",
+          "merchantIdentifier": "keypulse",
           "enableGooglePay": false
         }
       ]

@@ -1,5 +1,13 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  Alert,
+  Animated,
+  Image,
+  PanResponder,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useRef } from "react";
 import { Colors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { globalstyles } from "@/styles/common";
@@ -23,6 +31,31 @@ const Chatbox = ({ item }: Chat) => {
   const date = new Date(item.date);
 
   const localTime = date.toLocaleTimeString([], { hour12: true });
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        pan.extractOffset();
+      },
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (e, gestureState) => {
+        if (gestureState.dx > 100) {
+          Alert.alert("Action Triggered", "You swiped right!");
+          // Call your desired function here
+          // myFunction();
+        }
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
+      },
+    })
+  ).current;
+
   return (
     <>
       {/* notmymessage */}
@@ -73,6 +106,14 @@ const Chatbox = ({ item }: Chat) => {
               style={styles.profile}
             />
           </View>
+          <Animated.View
+            style={{
+              transform: [{ translateX: pan.x }],
+            }}
+            {...panResponder.panHandlers}
+          >
+            <Text style={{ color: "red" }}>Slide me to the right!</Text>
+          </Animated.View>
         </View>
       )}
     </>

@@ -68,8 +68,8 @@ const quotes = (props: Props) => {
   const [services, setServices] = useState<IServiceDTO[]>([]);
   const [serviceItems, setServiceItems] = useState<any>([]);
   const [serviceTerms, setServiceTerms] = useState("Choose Service");
-  const [cities, setCities] = useState<any>({});
-  const [states, setStates] = useState<any>({});
+  const [cities, setCities] = useState<any>([]);
+  const [states, setStates] = useState<any>([]);
   const serviceNames = services.map((service) => ({
     label: service.service_name,
     value: service.service_name,

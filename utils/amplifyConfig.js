@@ -64,6 +64,12 @@ const config = {
         endpoint: `${url}quote_stripe`,
       },
       {
+        name: "quote_secret",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}quote_secret`,
+      },
+      {
         name: "subscription-stripe",
         service: "lambda",
         region: region,

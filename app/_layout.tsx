@@ -34,6 +34,8 @@ import { configure } from "@/utils/amplifyConfiguration";
 import { Provider } from "react-redux";
 import { store } from "@/config/store";
 import AuthProvider from "@/utils/AuthProvider";
+import { StripeProvider } from "@stripe/stripe-react-native";
+import { Keys } from "@/constants/Keys";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -69,61 +71,70 @@ export default function RootLayout() {
   }
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <StripeProvider
+        publishableKey={
+          "pk_test_51NAhk4EYLaW39pmvmk9S1HIlssiq9t2SbOIwG0gsDPxpVa3XQlJEqeG6MjBTzhGhRpSzlIy9UuB1Zd0MaFcpznRf00DklgJ3N3"
+        }
+      >
+        <AuthProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-            {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
+              {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
 
-            <Stack.Screen
-              name="(auth)/signup"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="(auth)/login"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="(auth)/verifyuser"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="(auth)/forgotpassword"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="(auth)/resetpassword"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="myquotes" options={{ headerShown: false }} />
-            <Stack.Screen name="items" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="quotedetails"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="editprofile" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="subscription"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="changepassword"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="managesubscription"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="comments" options={{ headerShown: false }} />
-            <Stack.Screen name="you" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ThemeProvider>
-      </AuthProvider>
+              <Stack.Screen
+                name="(auth)/signup"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="(auth)/login"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="(auth)/verifyuser"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="(auth)/forgotpassword"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="(auth)/resetpassword"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="myquotes" options={{ headerShown: false }} />
+              <Stack.Screen name="items" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="quotedetails"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="editprofile"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="subscription"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="changepassword"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="managesubscription"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="comments" options={{ headerShown: false }} />
+              <Stack.Screen name="you" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </ThemeProvider>
+        </AuthProvider>
+      </StripeProvider>
     </Provider>
   );
 }
