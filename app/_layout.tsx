@@ -121,6 +121,10 @@ export default function RootLayout() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen
+                name="subscriptioncomments"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
                 name="changepassword"
                 options={{ headerShown: false }}
               />

@@ -39,7 +39,7 @@ const AuthProvider = ({ children }: Props) => {
         router.replace("(auth)/login");
       }
       if (currentuser) {
-        router.replace("subscription");
+        router.replace("(tabs)");
       }
     }
   }, [loading, currentuser, authGroup]);

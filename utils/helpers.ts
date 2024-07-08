@@ -16,4 +16,21 @@ export class Helpers {
   static namify = (field: any) => {
     return field.replace(/_/g, " ");
   };
+  static getFormattedSubDate = (dt: any) => {
+    if (!dt) {
+      return "";
+    }
+    if (!(dt instanceof Date)) {
+      dt = new Date(dt);
+      if (!dt || isNaN(dt)) {
+        return;
+      }
+    }
+    let day = dt.getDate();
+    day = day < 10 ? "0" + day : day;
+    let month = dt.getMonth() + 1;
+    month = month < 10 ? "0" + month : month;
+    // const year = dt.getFullYear();
+    return month + "/" + day;
+  };
 }
