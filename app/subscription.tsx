@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Fonts } from "@/constants/Fonts";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -14,10 +14,51 @@ import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { API, Auth } from "aws-amplify";
+import BillingCard from "@/components/cards/BillingCard";
 
 type Props = {};
 
 const subscription = (props: Props) => {
+  const [page, setPage] = useState(1);
+  const [billingdata, setBillingData] = useState<any>({
+    billings: [],
+    total: "",
+    totalPages: 0,
+    currentPage: page,
+  });
+  const [loading, setLoading] = useState(false);
+  const getBilings = async () => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    setLoading(true);
+    try {
+      const res = await API.get(
+        "billing-history",
+        `/pages/${page || `0`}`,
+        myInit
+      );
+      setBillingData({
+        billings: res.billing_history,
+        total: res.total,
+        currentPage: page,
+        totalPages: Math.ceil(res.total / 10),
+      });
+      console.log(res);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getBilings();
+  }, []);
   return (
     <SafeAreaView style={{ backgroundColor: Colors.primary }}>
       <StatusBar style="light" />
@@ -48,86 +89,23 @@ const subscription = (props: Props) => {
         </Text>
       </View>
       {/* body */}
-      <ScrollView style={[styles.body, { display: "flex" }]}>
-        <View style={{ gap: 10 }}>
-          <Text
-            style={{
-              fontFamily: Fonts.nun600,
-              fontSize: 16,
-              color: Colors.primary,
-            }}
-          >
-            Existing Payment Options
-          </Text>
-
-          {/* email */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Select existing address</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
-              </View>
-            </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={[styles.body, { display: "flex" }]}
+      >
+        {billingdata.billings.length > 0 ? (
+          billingdata.billings.map(
+            (item: any, index: React.Key | null | undefined) => (
+              <BillingCard key={index} item={item} />
+            )
+          )
+        ) : (
+          <View style={[globalstyles.centerview]}>
+            <Text style={{ fontFamily: Fonts.pop400, fontSize: 18 }}>
+              No Billing History
+            </Text>
           </View>
-          {/* phone */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Select existing address</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={{ gap: 10, marginTop: 24 }}>
-          <Text
-            style={{
-              fontFamily: Fonts.nun600,
-              fontSize: 16,
-              color: Colors.primary,
-            }}
-          >
-            Provide credit card details
-          </Text>
-
-          {/* email */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Email</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
-              </View>
-            </View>
-          </View>
-          {/* phone */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Phone Number</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
-              </View>
-            </View>
-          </View>
-          {/* year & securitycode */}
-          <View style={[globalstyles.rowview, { gap: 10 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Exp. Date</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="MM/YY" />
-              </View>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Security Code</Text>
-              <View style={styles.inputcon}>
-                <TextInput placeholder="Type here" />
-              </View>
-            </View>
-          </View>
-          {/* submit */}
-          <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btntext}>Add</Text>
-          </TouchableOpacity>
-        </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

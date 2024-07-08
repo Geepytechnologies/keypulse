@@ -30,7 +30,6 @@ const quotedetails = (props: Props) => {
   const [secret, setSecret] = useState("");
 
   const onCheckout = async () => {
-    await InitializePaymentsheet();
     const { error: paymentsheetError } = await presentPaymentSheet();
     if (paymentsheetError) {
       // console.error("Payment failed:", paymentsheetError);
@@ -41,14 +40,15 @@ const quotedetails = (props: Props) => {
     }
   };
   const InitializePaymentsheet = async () => {
-    // console.log(secret);
-    const { error } = await initPaymentSheet({
-      merchantDisplayName: "keypulse",
-      paymentIntentClientSecret: secret,
-      returnURL: "keypulse://stripe-redirect",
-    });
-    if (error) {
-      console.warn("frominitialize", error.message);
+    if (secret) {
+      const { error } = await initPaymentSheet({
+        merchantDisplayName: "keypulse",
+        paymentIntentClientSecret: secret,
+        returnURL: "keypulse://stripe-redirect",
+      });
+      if (error) {
+        console.warn("frominitialize", error.message);
+      }
     }
   };
 
@@ -62,15 +62,33 @@ const quotedetails = (props: Props) => {
         headers: { Authorization: session.idToken.jwtToken },
       };
       const res = await API.post("quote_secret", ``, myInit);
-      console.log(res);
+      console.log(res.paymentIntent);
       setSecret(res.paymentIntent);
       return res.paymentIntent;
     } catch (error: any) {
       console.error("Error fetching client secret:", error.message);
     }
   };
+  const fetchsession = async () => {
+    try {
+      const session: any = await Auth.currentSession().catch((e) => {
+        console.log(e);
+      });
+      const myInit = {
+        body: { id: quoteitems.id },
+        headers: { Authorization: session.idToken.jwtToken },
+      };
+      const res = await API.post("quote-stripe", ``, myInit);
+      console.log("session", res);
+    } catch (error: any) {
+      console.error("Error fetching client secret:", error.message);
+    }
+  };
   useEffect(() => {
-    fetchClientSecret();
+    fetchClientSecret().then(() => {
+      InitializePaymentsheet();
+    });
+    fetchsession();
   }, []);
   const CancelQuote = async () => {
     const session: any = await Auth.currentSession().catch((e) => {

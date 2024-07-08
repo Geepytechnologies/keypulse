@@ -108,7 +108,7 @@ const comments = (props: Props) => {
       return item.direction == false;
     };
     ismyMessage = isMyMessage();
-    const date = new Date(item.date);
+    const date = new Date(item?.date);
 
     const localTime = date.toLocaleTimeString([], { hour12: true });
 
@@ -197,7 +197,7 @@ const comments = (props: Props) => {
       );
       const invertedcomments = response.quote_comments.reverse();
       setComments(invertedcomments);
-      setLastFetchedDate(invertedcomments[invertedcomments.length - 1].date);
+      setLastFetchedDate(invertedcomments[invertedcomments.length - 1]?.date);
     } catch (error) {
       console.log(error);
     }
