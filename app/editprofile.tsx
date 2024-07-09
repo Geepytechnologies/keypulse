@@ -93,14 +93,14 @@ const editprofile = (props: Props) => {
       console.log(e);
     });
     const myInit = {
+      body: {
+        /* id, */
+        name: `${userProfile.first_name} ${userProfile.last_name}`,
+        /* email, */
+        phone: userProfile.phone,
+        country: userProfile.country,
+      },
       headers: {
-        body: {
-          /* id, */
-          name: `${userProfile.first_name.trim()} ${userProfile.last_name.trim()}`,
-          /* email, */
-          phone: userProfile.phone,
-          country: userProfile.country,
-        },
         Authorization: session.idToken.jwtToken,
       },
     };

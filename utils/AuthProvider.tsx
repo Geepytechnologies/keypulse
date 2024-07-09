@@ -29,29 +29,27 @@ const AuthProvider = ({ children }: Props) => {
     }
   };
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
 
   useEffect(() => {
-    if (!loading) {
-      if (!currentuser && !authGroup) {
-        router.replace("(auth)/login");
-      }
-      if (currentuser) {
-        router.replace("(tabs)");
-      }
+    if (!currentuser && !authGroup) {
+      router.replace("(auth)/login");
     }
-  }, [loading, currentuser, authGroup]);
+    if (currentuser) {
+      router.replace("(tabs)");
+    }
+  }, [currentuser]);
 
-  if (loading) {
-    return (
-      <View style={[globalstyles.centerview, { flex: 1 }]}>
-        <ActivityIndicator />
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={[globalstyles.centerview, { flex: 1 }]}>
+  //       <ActivityIndicator />
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
 
   return <>{children}</>;
 };
