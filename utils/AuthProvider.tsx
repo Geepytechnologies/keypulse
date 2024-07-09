@@ -26,55 +26,66 @@ const AuthProvider = ({ children }: Props) => {
   const dispatch = useDispatch();
   const rootNavigation = useNavigationContainerRef();
 
+  // useEffect(() => {
+  //   const unsubscribe = rootNavigation.addListener("state", (event) => {
+  //     setIsNavigationReady(true);
+  //   });
+  //   return function cleanup() {
+  //     if (unsubscribe) {
+  //       unsubscribe();
+  //     }
+  //   };
+  // }, [rootNavigation]);
+
+  const getUser = async () => {
+    try {
+      const res = await Auth.currentAuthenticatedUser();
+      dispatch(SIGNIN(res.attributes));
+    } catch (error) {
+      dispatch(SIGNOUT());
+      router.replace("(auth)/login");
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const unsubscribe = rootNavigation.addListener("state", (event) => {
-      setIsNavigationReady(true);
-    });
-    return function cleanup() {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [rootNavigation]);
-
-  useEffect(() => {
-    if (!isNavigationReady) return;
-
-    const getUser = async () => {
-      try {
-        const res = await Auth.currentAuthenticatedUser();
-        dispatch(SIGNIN(res.attributes));
-        setLoading(false);
-      } catch (error) {
-        console.error("Error getting user:", error);
-        dispatch(SIGNOUT());
-        setLoading(false);
-      } finally {
-        setFetchedData(true);
-      }
-    };
-
-    getUser();
-  }, [isNavigationReady]);
-
-  useEffect(() => {
-    if (!loading) {
-      if (!currentuser && !authGroup) {
+    if (currentuser) {
+      router.replace("(tabs)");
+    } else {
+      if (!authGroup) {
         router.replace("(auth)/login");
-      } else if (currentuser) {
-        router.replace("(tabs)");
+      } else {
+        router.replace("(auth)/signup");
       }
     }
-  }, [loading, currentuser, authGroup]);
+  }, [currentuser]);
 
-  if (loading) {
-    return (
-      <View style={[globalstyles.centerview, { flex: 1 }]}>
-        <ActivityIndicator />
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  // useEffect(() => {
+  //   if (!isNavigationReady) {
+  //     return;
+  //   }
+  //   if (!loading) {
+  //     if (!currentuser && !authGroup) {
+  //       router.replace("(auth)/login");
+  //     }
+  //     if (currentuser) {
+  //       router.replace("(tabs)");
+  //     }
+  //   }
+  // }, [loading, authGroup, isNavigationReady]);
+
+  // if (loading) {
+  //   return (
+  //     <View style={[globalstyles.centerview, { flex: 1 }]}>
+  //       <ActivityIndicator />
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
 
   return <>{children}</>;
 };

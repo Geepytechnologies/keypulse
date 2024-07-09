@@ -47,7 +47,6 @@ const editprofile = (props: Props) => {
       const res = await API.get("profile", ``, myInit);
       const { name, phone, country, email } = res;
       const name_arr = name.split(" ");
-      console.log(res.subscriptions);
       setUserProfile({
         first_name: name_arr[0],
         last_name: name_arr[1],
@@ -93,21 +92,19 @@ const editprofile = (props: Props) => {
       console.log(e);
     });
     const myInit = {
+      body: {
+        name: `${userProfile.first_name} ${userProfile.last_name}`,
+        phone: userProfile.phone,
+        country: userProfile.country,
+      },
       headers: {
-        body: {
-          /* id, */
-          name: `${userProfile.first_name.trim()} ${userProfile.last_name.trim()}`,
-          /* email, */
-          phone: userProfile.phone,
-          country: userProfile.country,
-        },
         Authorization: session.idToken.jwtToken,
       },
     };
+    setLoading(true);
     try {
       if (validateForm()) {
-        console.log(userProfile);
-        const response = await API.put("profile", ``, myInit);
+        const response = await API.put("profile", ` `, myInit);
         if (response) {
           getProfile();
           Alert.alert("Successful", "Profile updated successfully");
@@ -117,6 +114,8 @@ const editprofile = (props: Props) => {
       }
     } catch (error: any) {
       console.log("error from updating profile", error.message);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {

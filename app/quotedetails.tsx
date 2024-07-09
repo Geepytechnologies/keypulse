@@ -33,7 +33,7 @@ const quotedetails = (props: Props) => {
     const { error: paymentsheetError } = await presentPaymentSheet();
     if (paymentsheetError) {
       // console.error("Payment failed:", paymentsheetError);
-      // Alert.alert("Payment failed", paymentsheetError.message);
+      Alert.alert("Payment failed", "Try Again Later");
     } else {
       console.log("Payment successful!");
       Alert.alert("Payment successful", "Your payment was successful.");
