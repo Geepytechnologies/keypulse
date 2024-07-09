@@ -37,35 +37,35 @@ const AuthProvider = ({ children }: Props) => {
     };
   }, [rootNavigation]);
 
-  const getUser = async () => {
-    try {
-      const res = await Auth.currentAuthenticatedUser();
-      dispatch(SIGNIN(res.attributes));
-      setFetchedData(true);
-    } catch (error) {
-      // dispatch(SIGNOUT());
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    if (!isNavigationReady) return;
+
+    const getUser = async () => {
+      try {
+        const res = await Auth.currentAuthenticatedUser();
+        dispatch(SIGNIN(res.attributes));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error getting user:", error);
+        dispatch(SIGNOUT());
+        setLoading(false);
+      } finally {
+        setFetchedData(true);
+      }
+    };
+
     getUser();
-  }, []);
+  }, [isNavigationReady]);
 
   useEffect(() => {
-    if (!isNavigationReady) {
-      return;
-    }
     if (!loading) {
       if (!currentuser && !authGroup) {
         router.replace("(auth)/login");
-      }
-      if (currentuser) {
+      } else if (currentuser) {
         router.replace("(tabs)");
       }
     }
-  }, [loading, currentuser, authGroup, isNavigationReady]);
+  }, [loading, currentuser, authGroup]);
 
   if (loading) {
     return (
