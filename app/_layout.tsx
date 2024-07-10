@@ -39,6 +39,7 @@ import { Keys } from "@/constants/Keys";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+configure();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -62,7 +63,6 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
-      configure();
     }
   }, [loaded]);
 
