@@ -135,7 +135,7 @@ const comments = (props: Props) => {
               <View style={{ maxWidth: "80%" }}>
                 <Text style={styles.time}>{localTime}</Text>
 
-                <Text style={[styles.chatcon]}>{item.message}</Text>
+                <Text style={[styles.chatcon]}>{item?.message}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -158,14 +158,14 @@ const comments = (props: Props) => {
               <View style={{ maxWidth: "80%" }}>
                 <Text style={styles.timeforme}>{localTime}</Text>
                 <View style={[styles.chatconforme]}>
-                  {item.reply_id && (
+                  {item.reply_id !== "0" && item.reply_id !== null && (
                     <View style={[styles.replymessagecon]}>
                       <Text style={[styles.replymessage]}>
-                        {item.reply_message.message}
+                        {item.reply_message?.message}
                       </Text>
                     </View>
                   )}
-                  <Text style={[styles.chatconforme]}>{item.message}</Text>
+                  <Text style={[styles.chatconforme]}>{item?.message}</Text>
                 </View>
               </View>
               <Image
@@ -179,6 +179,7 @@ const comments = (props: Props) => {
     );
   };
   const getQuoteComments = async () => {
+    console.log("i was called");
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
     });
@@ -252,11 +253,10 @@ const comments = (props: Props) => {
     setRequestLoading(true);
     try {
       if (validateMessage(messageText)) {
-        const result = await API.post("quote-comments", ``, myInit);
-        if (result) {
+        const result = await API.post("quote-comments", ``, myInit).then(() => {
           setMessageText("");
           getQuoteComments();
-        }
+        });
       }
     } catch (error) {
       console.log("error from sending message: " + error);
@@ -271,9 +271,10 @@ const comments = (props: Props) => {
   const handleEndReached = () => {
     // if (loading) return;
   };
-  useEffect(() => {
-    getQuoteComments();
-  }, [page]);
+  // useEffect(() => {
+  //   getQuoteComments();
+  // }, [page]);
+
   const [isTop, setIsTop] = useState(true);
   const handleScroll = (event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -377,7 +378,9 @@ const comments = (props: Props) => {
               onPress={sendComment}
               style={styles.sendcon}
             >
-              <Text style={styles.send}>Send</Text>
+              <Text style={styles.send}>
+                {requestloading ? "Processing..." : "Send"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
