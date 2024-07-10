@@ -20,7 +20,6 @@ import { globalstyles } from "@/styles/common";
 import { Fonts } from "@/constants/Fonts";
 import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
-import RNPickerSelect from "react-native-picker-select";
 import Radiofill from "@/assets/images/icons/radio-fill.svg";
 import RadioOutline from "@/assets/images/icons/radio-outline.svg";
 import { API, Auth } from "aws-amplify";
@@ -30,6 +29,7 @@ import { Helpers } from "@/utils/helpers";
 import { dropdownData } from "@/utils/dropdownOptions";
 import SelectableItemCard from "@/components/cards/SelectableItemCard";
 import Toast from "react-native-toast-message";
+import { Picker } from "@react-native-picker/picker";
 
 type Props = {};
 
@@ -248,12 +248,7 @@ const quotes = (props: Props) => {
       const uniqueStates = new Set(states);
 
       const uniqueStatesArray = [...uniqueStates];
-      const stateNames = uniqueStatesArray.map((item: any, index: any) => ({
-        label: item,
-        value: item,
-        key: index,
-      }));
-      setStates(stateNames);
+      setStates(uniqueStatesArray);
       setServicedetails({
         service: response.service,
         items: response.items,
@@ -306,7 +301,7 @@ const quotes = (props: Props) => {
       key: index,
     }));
     const updatedCityNames = [...cityNames, { label: "Other", value: "Other" }];
-    setCities(updatedCityNames);
+    setCities(uniqueCitiesArray);
   }, [formDetails.state]);
   //validation
 
@@ -390,6 +385,7 @@ const quotes = (props: Props) => {
   useEffect(() => {
     getServices();
   }, []);
+  console.log(states);
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -431,23 +427,22 @@ const quotes = (props: Props) => {
               <Text style={styles.coloredheader}>Please select a service</Text>
               <View style={{ gap: 5 }}>
                 <Text style={styles.label}>Service</Text>
-                <View style={styles.inputcon}>
-                  <RNPickerSelect
-                    onValueChange={(value) => setSelectedService(value)}
-                    items={serviceNames}
-                    useNativeAndroidPickerStyle={false}
-                    placeholder={{ label: "Select Service", color: "#64748B" }}
-                    Icon={() => {
-                      return (
-                        <FontAwesome6
-                          name="angle-down"
-                          size={24}
-                          color="#64748B"
-                        />
-                      );
-                    }}
-                  />
-                </View>
+                <Picker
+                  selectedValue={selectedService}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setSelectedService(itemValue)
+                  }
+                >
+                  <Picker.Item label="Select Service" value="" />
+                  {services.map((service, index) => (
+                    <Picker.Item
+                      key={index}
+                      label={service.service_name}
+                      value={service.service_name}
+                    />
+                  ))}
+                </Picker>
+
                 <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
                   <View
                     style={[
@@ -472,7 +467,7 @@ const quotes = (props: Props) => {
                     {serviceItems &&
                       serviceItems.map(
                         (item: any, index: React.Key | null | undefined) => (
-                          <View style={{ marginBottom: 10 }} key={item.id}>
+                          <View style={{ marginBottom: 10 }} key={index}>
                             <Itemcard
                               title={item.name}
                               content={item.description}
@@ -528,51 +523,44 @@ const quotes = (props: Props) => {
               {/* state */}
               <View style={{ gap: 5, flex: 1 }}>
                 <Text style={styles.label}>State</Text>
+
                 <View style={[styles.inputcon]}>
-                  <RNPickerSelect
-                    onValueChange={(value) => handleChange("state", value)}
-                    items={states}
-                    useNativeAndroidPickerStyle={false}
-                    placeholder={{ label: "Select State", color: "#64748B" }}
-                    Icon={() => {
-                      return (
-                        <FontAwesome6
-                          name="angle-down"
-                          size={24}
-                          color="#64748B"
-                        />
-                      );
-                    }}
-                  />
+                  <Picker
+                    selectedValue={formDetails.state}
+                    onValueChange={(itemValue, itemIndex) =>
+                      handleChange("state", itemValue)
+                    }
+                  >
+                    <Picker.Item label="Select State" value="" />
+                    {states.map((item: string | undefined, index: any) => (
+                      <Picker.Item key={index} label={item} value={item} />
+                    ))}
+                  </Picker>
                 </View>
                 {errors && errors.state && (
                   <Text style={globalstyles.error}>{errors.state}</Text>
                 )}
               </View>
-              {/* city */}
-              <View style={{ gap: 5, flex: 1 }}>
-                <Text style={styles.label}>City</Text>
-                <View style={[styles.inputcon]}>
-                  <RNPickerSelect
-                    onValueChange={(value) => handleChange("city", value)}
-                    items={cities}
-                    useNativeAndroidPickerStyle={false}
-                    placeholder={{ label: "Select City", color: "#64748B" }}
-                    Icon={() => {
-                      return (
-                        <FontAwesome6
-                          name="angle-down"
-                          size={24}
-                          color="#64748B"
-                        />
-                      );
-                    }}
-                  />
-                </View>
-                {errors && errors.location_id && (
-                  <Text style={globalstyles.error}>{errors.location_id}</Text>
-                )}
+            </View>
+            {/* city */}
+            <View style={{ gap: 5, flex: 1 }}>
+              <Text style={styles.label}>City</Text>
+              <View style={[styles.inputcon]}>
+                <Picker
+                  selectedValue={formDetails.city_name}
+                  onValueChange={(itemValue, itemIndex) =>
+                    handleChange("city", itemValue)
+                  }
+                >
+                  <Picker.Item label="Select City" value="" />
+                  {cities.map((item: string | undefined, index: any) => (
+                    <Picker.Item key={index} label={item} value={item} />
+                  ))}
+                </Picker>
               </View>
+              {errors && errors.location_id && (
+                <Text style={globalstyles.error}>{errors.location_id}</Text>
+              )}
             </View>
             {/* other city name */}
             {/* city */}
@@ -599,24 +587,15 @@ const quotes = (props: Props) => {
                   </Text>
                   {item.field_type === "text" || item.field_type === "num" ? (
                     <View style={[styles.inputcon]}>
-                      <RNPickerSelect
-                        onValueChange={() => {}}
-                        items={states}
-                        useNativeAndroidPickerStyle={false}
-                        placeholder={{
-                          label: "Select Condition",
-                          color: "#64748B",
-                        }}
-                        Icon={() => {
-                          return (
-                            <FontAwesome6
-                              name="angle-down"
-                              size={24}
-                              color="#64748B"
-                            />
-                          );
-                        }}
-                      />
+                      <Picker
+                        selectedValue={selectedService}
+                        onValueChange={(itemValue, itemIndex) => {}}
+                      >
+                        <Picker.Item label="Select State" value="" />
+                        {states.map((item: string | undefined, index: any) => (
+                          <Picker.Item label={item} value={item} />
+                        ))}
+                      </Picker>
                     </View>
                   ) : item.field_type === "desc" ? (
                     <View style={[styles.inputcon]}></View>
@@ -624,30 +603,17 @@ const quotes = (props: Props) => {
                     <View style={[styles.inputcon]}></View>
                   ) : item.field_type === "dd" ? (
                     <View style={[styles.inputcon]}>
-                      <RNPickerSelect
-                        onValueChange={() => {}}
-                        items={dropdownData[item.field_name].map(
-                          (item: any, index: any) => ({
-                            label: item,
-                            value: item,
-                            key: index,
-                          })
+                      <Picker
+                        selectedValue={selectedService}
+                        onValueChange={(itemValue, itemIndex) => {}}
+                      >
+                        <Picker.Item label="Select Condition" value="" />
+                        {dropdownData[item.field_name].map(
+                          (item: string | undefined, index: any) => (
+                            <Picker.Item label={item} value={item} />
+                          )
                         )}
-                        useNativeAndroidPickerStyle={false}
-                        placeholder={{
-                          label: "Select Condition",
-                          color: "#64748B",
-                        }}
-                        Icon={() => {
-                          return (
-                            <FontAwesome6
-                              name="angle-down"
-                              size={24}
-                              color="#64748B"
-                            />
-                          );
-                        }}
-                      />
+                      </Picker>
                     </View>
                   ) : item.field_type === "date" ? (
                     <View style={[styles.inputcon]}>

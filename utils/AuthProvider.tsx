@@ -49,9 +49,9 @@ const AuthProvider = ({ children }: Props) => {
     }
   };
 
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
+  useEffect(() => {
+    getUser();
+  }, []);
 
   useEffect(() => {
     if (!currentuser && !authGroup) {

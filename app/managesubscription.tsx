@@ -33,7 +33,7 @@ const managesubscription = (props: Props) => {
     setLoading(true);
     try {
       const res = await API.get("subscriptions", ``, myInit);
-      console.log(res.subscriptions);
+      // console.log(res.subscriptions);
       setSubscriptions(res.subscriptions);
     } catch (error) {
     } finally {

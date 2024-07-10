@@ -179,7 +179,6 @@ const comments = (props: Props) => {
     );
   };
   const getQuoteComments = async () => {
-    console.log("i was called");
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
     });
@@ -197,8 +196,9 @@ const comments = (props: Props) => {
         myInit
       );
       const invertedcomments = response.quote_comments.reverse();
+      console.log(invertedcomments);
       setComments(invertedcomments);
-      setLastFetchedDate(invertedcomments[invertedcomments.length - 1]?.date);
+      // setLastFetchedDate(invertedcomments[invertedcomments.length - 1]?.date);
     } catch (error) {
       console.log(error);
     }
@@ -229,6 +229,11 @@ const comments = (props: Props) => {
       flatListRef.current.scrollToEnd({ animated: false });
     }
   };
+  useEffect(() => {
+    if (comments.length > 0) {
+      flatListRef.current?.scrollToEnd({ animated: false });
+    }
+  }, [comments]);
   const handleMessageChange = (text: string) => {
     setMessageText(text);
   };
@@ -253,10 +258,11 @@ const comments = (props: Props) => {
     setRequestLoading(true);
     try {
       if (validateMessage(messageText)) {
-        const result = await API.post("quote-comments", ``, myInit).then(() => {
+        const result = await API.post("quote-comments", ``, myInit);
+        if (result) {
           setMessageText("");
           getQuoteComments();
-        });
+        }
       }
     } catch (error) {
       console.log("error from sending message: " + error);
@@ -271,9 +277,9 @@ const comments = (props: Props) => {
   const handleEndReached = () => {
     // if (loading) return;
   };
-  // useEffect(() => {
-  //   getQuoteComments();
-  // }, [page]);
+  useEffect(() => {
+    getQuoteComments();
+  }, [page]);
 
   const [isTop, setIsTop] = useState(true);
   const handleScroll = (event: any) => {

@@ -52,23 +52,7 @@ const subscriptioncomments = (props: Props) => {
     status: false,
     message: "",
   });
-  const dummy20array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-  const dummycommentarray = [
-    { id: "1", time: "", message: "hello world", direction: false, date: "" },
-    { id: "2", time: "", message: "hello world", direction: true, date: "" },
-    { id: "3", time: "", message: "hello world", direction: true, date: "" },
-    { id: "4", time: "", message: "hello world", direction: true, date: "" },
-    { id: "5", time: "", message: "hello", direction: true, date: "" },
-    { id: "6", time: "", message: "hello", direction: true, date: "" },
-    { id: "7", time: "", message: "hello", direction: true, date: "" },
-    { id: "8", time: "", message: "hello", direction: true, date: "" },
-    { id: "9", time: "", message: "hello", direction: true, date: "" },
-    { id: "10", time: "", message: "hello", direction: true, date: "" },
-    { id: "11", time: "", message: "hello", direction: true, date: "" },
-    { id: "12", time: "", message: "hello", direction: true, date: "" },
-    { id: "13", time: "", message: "hello", direction: true, date: "" },
-    { id: "14", time: "", message: "hello", direction: true, date: "" },
-  ];
+
   const handleHold = () => {
     setItemReply(true);
     // Call your desired function here
@@ -158,13 +142,13 @@ const subscriptioncomments = (props: Props) => {
               <View style={{ maxWidth: "80%" }}>
                 <Text style={styles.timeforme}>{localTime}</Text>
                 <View style={[styles.chatconforme]}>
-                  {item.reply_id && (
+                  {/* {item.reply_id && (
                     <View style={[styles.replymessagecon]}>
                       <Text style={[styles.replymessage]}>
                         {item.reply_message.message}
                       </Text>
                     </View>
-                  )}
+                  )} */}
                   <Text style={[styles.chatconforme]}>{item.message}</Text>
                 </View>
               </View>
@@ -178,6 +162,7 @@ const subscriptioncomments = (props: Props) => {
       </>
     );
   };
+  console.log(comments);
   const getSubscriptionComments = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -195,9 +180,9 @@ const subscriptioncomments = (props: Props) => {
         `/${id}/${limit}/${last_datetime}`,
         myInit
       );
-      const invertedcomments = response.quote_comments.reverse();
+      const invertedcomments = response?.subscription_comments.reverse();
       setComments(invertedcomments);
-      setLastFetchedDate(invertedcomments[invertedcomments.length - 1]?.date);
+      // setLastFetchedDate(invertedcomments[invertedcomments.length - 1]?.date);
     } catch (error) {
       console.log(error);
     }
@@ -222,7 +207,11 @@ const subscriptioncomments = (props: Props) => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
     });
-    const submitdata = { id, reply_id: replyID, message: messageText };
+    const submitdata = {
+      subscription_id: id,
+      reply_id: replyID,
+      message: messageText,
+    };
     const myInit = {
       body: submitdata,
       headers: {
@@ -233,6 +222,7 @@ const subscriptioncomments = (props: Props) => {
     try {
       if (validateMessage(messageText)) {
         const result = await API.post("subscription-comments", ``, myInit);
+        console.log(result);
         if (result) {
           setMessageText("");
           getSubscriptionComments();
@@ -358,7 +348,9 @@ const subscriptioncomments = (props: Props) => {
               onPress={sendComment}
               style={styles.sendcon}
             >
-              <Text style={styles.send}>Send</Text>
+              <Text style={styles.send}>
+                {requestloading ? "Sending..." : "Send"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

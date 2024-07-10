@@ -39,6 +39,7 @@ const quotedetails = (props: Props) => {
       Alert.alert("Payment successful", "Your payment was successful.");
     }
   };
+
   const InitializePaymentsheet = async () => {
     if (secret) {
       const { error } = await initPaymentSheet({
