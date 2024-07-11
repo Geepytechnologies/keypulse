@@ -98,17 +98,10 @@ const settings = (props: Props) => {
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => router.push("myquotes")}
-                style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
+                style={[globalstyles.rowview, { gap: 15 }]}
               >
                 <Quote />
-                <Text
-                  style={{
-                    fontFamily: Fonts.pop500,
-                    fontSize: 16,
-                    lineHeight: 24,
-                    letterSpacing: -0.16,
-                  }}
-                >
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Manage Quotes
                 </Text>
               </TouchableOpacity>
