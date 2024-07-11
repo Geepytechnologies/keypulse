@@ -142,13 +142,13 @@ const subscriptioncomments = (props: Props) => {
               <View style={{ maxWidth: "80%" }}>
                 <Text style={styles.timeforme}>{localTime}</Text>
                 <View style={[styles.chatconforme]}>
-                  {/* {item.reply_id && (
+                  {item.reply_id !== "0" && item.reply_id !== null && (
                     <View style={[styles.replymessagecon]}>
                       <Text style={[styles.replymessage]}>
-                        {item.reply_message.message}
+                        {item.reply_message?.message}
                       </Text>
                     </View>
-                  )} */}
+                  )}
                   <Text style={[styles.chatconforme]}>{item.message}</Text>
                 </View>
               </View>
@@ -162,7 +162,7 @@ const subscriptioncomments = (props: Props) => {
       </>
     );
   };
-  console.log(comments);
+  // console.log(comments);
   const getSubscriptionComments = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);

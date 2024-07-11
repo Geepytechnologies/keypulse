@@ -469,6 +469,7 @@ const quotes = (props: Props) => {
                         (item: any, index: React.Key | null | undefined) => (
                           <View style={{ marginBottom: 10 }} key={index}>
                             <Itemcard
+                              key={index}
                               title={item.name}
                               content={item.description}
                             />

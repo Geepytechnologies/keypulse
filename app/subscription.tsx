@@ -1,4 +1,5 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { API, Auth } from "aws-amplify";
 import BillingCard from "@/components/cards/BillingCard";
+import { useStripe } from "@stripe/stripe-react-native";
 
 type Props = {};
 
@@ -28,6 +30,54 @@ const subscription = (props: Props) => {
     currentPage: page,
   });
   const [loading, setLoading] = useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [secret, setSecret] = useState("");
+
+  const onCheckout = async () => {
+    await InitializePaymentsheet();
+    const { error: paymentsheetError } = await presentPaymentSheet();
+    if (paymentsheetError) {
+      console.log("Payment failed:", paymentsheetError);
+      Alert.alert(paymentsheetError.code, paymentsheetError.message);
+    } else {
+      console.log("Payment successful!");
+      Alert.alert("Success", "Your payment was successful.");
+    }
+  };
+
+  const InitializePaymentsheet = async () => {
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "keypulse",
+      paymentIntentClientSecret: secret,
+      returnURL: "keypulse://stripe-redirect",
+    });
+    if (error) {
+      // console.warn("frominitialize", error.message);
+    }
+  };
+
+  const fetchClientSecret = async () => {
+    try {
+      const session: any = await Auth.currentSession().catch((e) => {
+        console.log(e);
+      });
+      const myInit = {
+        body: { id: "" },
+        headers: { Authorization: session.idToken.jwtToken },
+      };
+      const res = await API.post("quote_secret", ``, myInit);
+      console.log("intent", res.paymentIntent);
+      setSecret(res.paymentIntent);
+      // InitializePaymentsheet();
+      return res.paymentIntent;
+    } catch (error: any) {
+      console.error("Error fetching client secret:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchClientSecret();
+  }, []);
   const getBilings = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -96,7 +146,7 @@ const subscription = (props: Props) => {
         {billingdata.billings.length > 0 ? (
           billingdata.billings.map(
             (item: any, index: React.Key | null | undefined) => (
-              <BillingCard key={index} item={item} />
+              <BillingCard key={index} item={item} checkout={onCheckout} />
             )
           )
         ) : (

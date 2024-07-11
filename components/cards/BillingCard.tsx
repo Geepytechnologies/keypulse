@@ -1,6 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Fonts } from "@/constants/Fonts";
+import { globalstyles } from "@/styles/common";
+import { Colors } from "@/constants/Colors";
 
 type Props = {
   item: {
@@ -10,9 +12,10 @@ type Props = {
     last4: string;
     status: string;
   };
+  checkout: any;
 };
 
-const BillingCard = ({ item }: Props) => {
+const BillingCard = ({ item, checkout }: Props) => {
   return (
     <View style={styles.container}>
       <View>
@@ -31,9 +34,29 @@ const BillingCard = ({ item }: Props) => {
         <Text style={[styles.header]}>Card Info(Last 4 Digit)</Text>
         <Text style={[styles.content]}>{item.last4}</Text>
       </View>
-      <View>
-        <Text style={[styles.header]}>Transaction Status</Text>
-        <Text style={[styles.content]}>{item.status}</Text>
+      <View style={[globalstyles.rowview, { justifyContent: "space-between" }]}>
+        <View>
+          <Text style={[styles.header]}>Transaction Status</Text>
+          <Text style={[styles.content]}>{item.status}</Text>
+        </View>
+        {item.status == "Pending" && (
+          <TouchableOpacity
+            onPress={checkout}
+            style={{
+              backgroundColor: Colors.primary,
+              borderRadius: 12,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+            }}
+            activeOpacity={0.8}
+          >
+            <Text
+              style={{ fontSize: 16, color: "white", fontFamily: Fonts.pop500 }}
+            >
+              Pay
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

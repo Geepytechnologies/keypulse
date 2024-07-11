@@ -30,26 +30,25 @@ const quotedetails = (props: Props) => {
   const [secret, setSecret] = useState("");
 
   const onCheckout = async () => {
+    await InitializePaymentsheet();
     const { error: paymentsheetError } = await presentPaymentSheet();
     if (paymentsheetError) {
-      // console.error("Payment failed:", paymentsheetError);
-      Alert.alert("Payment failed", "Try Again Later");
+      console.log("Payment failed:", paymentsheetError);
+      Alert.alert(paymentsheetError.code, paymentsheetError.message);
     } else {
       console.log("Payment successful!");
-      Alert.alert("Payment successful", "Your payment was successful.");
+      Alert.alert("Success", "Your payment was successful.");
     }
   };
 
   const InitializePaymentsheet = async () => {
-    if (secret) {
-      const { error } = await initPaymentSheet({
-        merchantDisplayName: "keypulse",
-        paymentIntentClientSecret: secret,
-        returnURL: "keypulse://stripe-redirect",
-      });
-      if (error) {
-        console.warn("frominitialize", error.message);
-      }
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "keypulse",
+      paymentIntentClientSecret: secret,
+      returnURL: "keypulse://stripe-redirect",
+    });
+    if (error) {
+      // console.warn("frominitialize", error.message);
     }
   };
 
@@ -63,33 +62,17 @@ const quotedetails = (props: Props) => {
         headers: { Authorization: session.idToken.jwtToken },
       };
       const res = await API.post("quote_secret", ``, myInit);
-      console.log(res.paymentIntent);
+      console.log("intent", res.paymentIntent);
       setSecret(res.paymentIntent);
+      // InitializePaymentsheet();
       return res.paymentIntent;
     } catch (error: any) {
       console.error("Error fetching client secret:", error.message);
     }
   };
-  const fetchsession = async () => {
-    try {
-      const session: any = await Auth.currentSession().catch((e) => {
-        console.log(e);
-      });
-      const myInit = {
-        body: { id: quoteitems.id },
-        headers: { Authorization: session.idToken.jwtToken },
-      };
-      const res = await API.post("quote-stripe", ``, myInit);
-      console.log("session", res);
-    } catch (error: any) {
-      console.error("Error fetching client secret:", error.message);
-    }
-  };
+
   useEffect(() => {
-    fetchClientSecret().then(() => {
-      InitializePaymentsheet();
-    });
-    fetchsession();
+    fetchClientSecret();
   }, []);
   const CancelQuote = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
@@ -115,7 +98,7 @@ const quotedetails = (props: Props) => {
       setLoading(false);
     }
   };
-  console.log(quoteitems.status);
+  // console.log(quoteitems.status);
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}

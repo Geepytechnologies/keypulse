@@ -156,7 +156,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
               letterSpacing: -0.16,
             }}
           >
-            Manage Billing
+            Billing History
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -180,7 +180,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
       <View style={{ marginTop: "auto" }}>
         {/* hr */}
         <View style={globalstyles.hr}></View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
@@ -195,7 +195,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
           >
             123 456 789
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={signout}
           activeOpacity={0.6}

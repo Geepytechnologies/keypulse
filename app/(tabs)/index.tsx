@@ -57,6 +57,7 @@ const HomeScreen = () => {
     };
     try {
       const res = await API.get("quotes", "", myInit);
+      console.log(res.quotes);
       const filteredquotes = res.quotes.filter(
         (q: any) => q.status !== "Approved"
       );
@@ -172,7 +173,7 @@ const HomeScreen = () => {
   );
 };
 
-export default React.memo(HomeScreen);
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   notification: {

@@ -111,7 +111,7 @@ const settings = (props: Props) => {
               >
                 <Card />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
-                  Manage Billing
+                  Billing History
                 </Text>
               </TouchableOpacity>
               <View style={[globalstyles.rowview, { gap: 15 }]}>
