@@ -25,7 +25,23 @@ type Props = {
     };
   };
 };
-
+export enum Status {
+  Active = "#10AC16",
+  On_Hold = "#FFBB6A",
+  Cancelled = "red",
+}
+const statuscolor = (item: any) => {
+  switch (item.status) {
+    case "Active":
+      return Status.Active;
+    case "On Hold":
+      return Status.On_Hold;
+    case "Cancelled":
+      return Status.Cancelled;
+    default:
+      return;
+  }
+};
 const Subscriptioncard = ({ item, getSubscriptions }: Props) => {
   const [loading, setLoading] = useState(false);
   const cancelSubscription = async (subscriptionID: string) => {
@@ -51,91 +67,106 @@ const Subscriptioncard = ({ item, getSubscriptions }: Props) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={[styles.header]}>Subscription Id</Text>
-        <Text style={[styles.content]}>S-{item.id}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Service name</Text>
-        <Text style={[styles.content]}>{item.service?.service_name || ""}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Billing Date</Text>
-        <Text style={[styles.content]}>
-          {Helpers.getFormattedSubDate(item.billing_date)}
-        </Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Subscription Amount</Text>
-        <Text style={[styles.content]}>{item.amount}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Status</Text>
-        <Text style={[styles.content]}>{item.status}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Payment Link</Text>
-        <Text style={[styles.content]}>{item.payment_link || ""}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Customer phone</Text>
-        <Text style={[styles.content]}>{item.customer_phone || ""}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Recipient phone</Text>
-        <Text style={[styles.content]}>{item.recipient_phone || ""}</Text>
-      </View>
-      <View>
-        <Text style={[styles.header]}>Staff phone</Text>
-        <Text style={[styles.content]}>{item.staff_phone || ""}</Text>
-      </View>
-      {item?.care_take_phones && item.care_take_phones.split(":").length > 0 ? (
-        item.care_taker_phones.split(":").map((phone: string) => (
-          <View>
-            <Text style={[styles.header]}>Care Taker</Text>
-            <Text style={[styles.content]}>{phone}</Text>
-          </View>
-        ))
-      ) : (
-        <></>
-      )}
-      {/* buttons */}
-      <View style={[globalstyles.rowview, { gap: 10 }]}>
-        {item.status !== "Cancelled" && (
+    <View style={[globalstyles.rowview, styles.container, { gap: 12 }]}>
+      <View
+        style={[
+          {
+            backgroundColor: statuscolor(item),
+            width: 10,
+            height: "100%",
+            borderRadius: 10,
+          },
+        ]}
+      ></View>
+      <View style={{ flex: 1 }}>
+        <View>
+          <Text style={[styles.header]}>Subscription Id</Text>
+          <Text style={[styles.content]}>S-{item.id}</Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Service name</Text>
+          <Text style={[styles.content]}>
+            {item.service?.service_name || ""}
+          </Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Billing Date</Text>
+          <Text style={[styles.content]}>
+            {Helpers.getFormattedSubDate(item.billing_date)}
+          </Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Subscription Amount</Text>
+          <Text style={[styles.content]}>{item.amount}</Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Status</Text>
+          <Text style={[styles.content]}>{item.status}</Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Payment Link</Text>
+          <Text style={[styles.content]}>{item.payment_link || ""}</Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Customer phone</Text>
+          <Text style={[styles.content]}>{item.customer_phone || ""}</Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Recipient phone</Text>
+          <Text style={[styles.content]}>{item.recipient_phone || ""}</Text>
+        </View>
+        <View>
+          <Text style={[styles.header]}>Staff phone</Text>
+          <Text style={[styles.content]}>{item.staff_phone || ""}</Text>
+        </View>
+        {item?.care_take_phones &&
+        item.care_take_phones.split(":").length > 0 ? (
+          item.care_taker_phones.split(":").map((phone: string) => (
+            <View>
+              <Text style={[styles.header]}>Care Taker</Text>
+              <Text style={[styles.content]}>{phone}</Text>
+            </View>
+          ))
+        ) : (
+          <></>
+        )}
+        {/* buttons */}
+        <View style={[globalstyles.rowview, { gap: 10 }]}>
+          {item.status !== "Cancelled" && (
+            <TouchableOpacity
+              disabled={loading}
+              style={{
+                backgroundColor: Colors.primary,
+                borderRadius: 16,
+                padding: 16,
+                flex: 1,
+              }}
+              onPress={() => cancelSubscription(item.id)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.actiontext}>
+                {loading ? "Processing..." : "Cancel"}
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
-            disabled={loading}
             style={{
-              backgroundColor: Colors.primary,
+              backgroundColor: "black",
               borderRadius: 16,
               padding: 16,
               flex: 1,
             }}
-            onPress={() => cancelSubscription(item.id)}
+            onPress={() =>
+              router.push({
+                pathname: "subscriptioncomments",
+                params: { id: item.id },
+              })
+            }
             activeOpacity={0.8}
           >
-            <Text style={styles.actiontext}>
-              {loading ? "Processing..." : "Cancel"}
-            </Text>
+            <Text style={styles.actiontext}>Comments</Text>
           </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          style={{
-            backgroundColor: "black",
-            borderRadius: 16,
-            padding: 16,
-            flex: 1,
-          }}
-          onPress={() =>
-            router.push({
-              pathname: "subscriptioncomments",
-              params: { id: item.id },
-            })
-          }
-          activeOpacity={0.8}
-        >
-          <Text style={styles.actiontext}>Comments</Text>
-        </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

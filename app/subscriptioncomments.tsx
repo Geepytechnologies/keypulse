@@ -43,7 +43,7 @@ const subscriptioncomments = (props: Props) => {
   const flatListRef = useRef<FlatList | null>(null);
   const [page, setPage] = useState(1);
   const [lastFetchedDate, setLastFetchedDate] = useState("0");
-  const [replyID, setReplyID] = useState("0");
+  const [replyID, setReplyID] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [requestloading, setRequestLoading] = useState(false);
   const holdTimeout = useRef<NodeJS.Timeout | null>(null);
