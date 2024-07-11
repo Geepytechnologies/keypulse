@@ -425,23 +425,25 @@ const quotes = (props: Props) => {
             {/* Please select a service */}
             <View style={{ gap: 10 }}>
               <Text style={styles.coloredheader}>Please select a service</Text>
-              <View style={[styles.inputcon, { gap: 5 }]}>
+              <View style={[{ gap: 5 }]}>
                 <Text style={styles.label}>Service</Text>
-                <Picker
-                  selectedValue={selectedService}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSelectedService(itemValue)
-                  }
-                >
-                  <Picker.Item label="Select Service" value="" />
-                  {services.map((service, index) => (
-                    <Picker.Item
-                      key={index}
-                      label={service.service_name}
-                      value={service.service_name}
-                    />
-                  ))}
-                </Picker>
+                <View style={styles.inputcon}>
+                  <Picker
+                    selectedValue={selectedService}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setSelectedService(itemValue)
+                    }
+                  >
+                    <Picker.Item label="Select Service" value="" />
+                    {services.map((service, index) => (
+                      <Picker.Item
+                        key={index}
+                        label={service.service_name}
+                        value={service.service_name}
+                      />
+                    ))}
+                  </Picker>
+                </View>
 
                 {selectedService !== null && (
                   <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
