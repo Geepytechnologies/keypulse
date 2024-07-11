@@ -73,28 +73,30 @@ const managesubscription = (props: Props) => {
         </Text>
       </View>
       {/* body */}
-      <ScrollView style={styles.body}>
-        {subscriptions.length > 0
-          ? subscriptions.map((item, index) => (
-              <Subscriptioncard
-                key={index}
-                item={item}
-                getSubscriptions={getSubscriptions}
-              />
-            ))
-          : !loading && (
-              <View style={[globalstyles.centerview]}>
-                <Text
-                  style={{
-                    fontFamily: Fonts.pop500,
-                    fontSize: 18,
-                    lineHeight: 20,
-                  }}
-                >
-                  No Subscriptions
-                </Text>
-              </View>
-            )}
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+        <View style={{ marginBottom: 100 }}>
+          {subscriptions.length > 0
+            ? subscriptions.map((item, index) => (
+                <Subscriptioncard
+                  key={index}
+                  item={item}
+                  getSubscriptions={getSubscriptions}
+                />
+              ))
+            : !loading && (
+                <View style={[globalstyles.centerview]}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.pop500,
+                      fontSize: 18,
+                      lineHeight: 20,
+                    }}
+                  >
+                    No Subscriptions
+                  </Text>
+                </View>
+              )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

@@ -71,7 +71,7 @@ const subscription = (props: Props) => {
       // InitializePaymentsheet();
       return res.paymentIntent;
     } catch (error: any) {
-      console.error("Error fetching client secret:", error.message);
+      // console.error("Error fetching client secret:", error.message);
     }
   };
 
@@ -143,19 +143,21 @@ const subscription = (props: Props) => {
         showsVerticalScrollIndicator={false}
         style={[styles.body, { display: "flex" }]}
       >
-        {billingdata.billings.length > 0 ? (
-          billingdata.billings.map(
-            (item: any, index: React.Key | null | undefined) => (
-              <BillingCard key={index} item={item} checkout={onCheckout} />
+        <View style={{ marginBottom: 100 }}>
+          {billingdata.billings.length > 0 ? (
+            billingdata.billings.map(
+              (item: any, index: React.Key | null | undefined) => (
+                <BillingCard key={index} item={item} checkout={onCheckout} />
+              )
             )
-          )
-        ) : (
-          <View style={[globalstyles.centerview]}>
-            <Text style={{ fontFamily: Fonts.pop400, fontSize: 18 }}>
-              No Billing History
-            </Text>
-          </View>
-        )}
+          ) : (
+            <View style={[globalstyles.centerview]}>
+              <Text style={{ fontFamily: Fonts.pop400, fontSize: 18 }}>
+                No Billing History
+              </Text>
+            </View>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
