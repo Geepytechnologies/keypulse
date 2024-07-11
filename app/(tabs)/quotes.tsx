@@ -444,7 +444,7 @@ const quotes = (props: Props) => {
                 </Picker>
 
                 {selectedService !== null && (
-                  <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
+                  <TouchableOpacity activeOpacity={0.8}>
                     <View
                       style={[
                         globalstyles.rowview,
@@ -527,7 +527,7 @@ const quotes = (props: Props) => {
               <View style={{ gap: 5, flex: 1 }}>
                 <Text style={styles.label}>State</Text>
 
-                <View style={[styles.inputcon]}>
+                <View>
                   <Picker
                     selectedValue={formDetails.state}
                     onValueChange={(itemValue, itemIndex) =>
@@ -548,7 +548,7 @@ const quotes = (props: Props) => {
             {/* city */}
             <View style={{ gap: 5, flex: 1 }}>
               <Text style={styles.label}>City</Text>
-              <View style={[styles.inputcon]}>
+              <View>
                 <Picker
                   selectedValue={formDetails.city_name}
                   onValueChange={(itemValue, itemIndex) =>

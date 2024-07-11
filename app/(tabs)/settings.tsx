@@ -25,6 +25,7 @@ import Flag from "@/assets/images/icons/flag.svg";
 import { Auth } from "aws-amplify";
 import { useDispatch } from "react-redux";
 import { SIGNOUT } from "@/config/slices/userSlice";
+import Quote from "@/assets/images/icons/quote.svg";
 
 type Props = {};
 
@@ -91,10 +92,26 @@ const settings = (props: Props) => {
               >
                 <Subscription />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
-                  Subscription
+                  Manage Subscription
                 </Text>
               </TouchableOpacity>
-
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => router.push("myquotes")}
+                style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
+              >
+                <Quote />
+                <Text
+                  style={{
+                    fontFamily: Fonts.pop500,
+                    fontSize: 16,
+                    lineHeight: 24,
+                    letterSpacing: -0.16,
+                  }}
+                >
+                  Manage Quotes
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => router.push("changepassword")}
                 activeOpacity={0.7}
