@@ -13,6 +13,7 @@ export enum Status {
   Approved = "#10AC16",
   Pending = "#FFBB6A",
   Rejected = "#FF6A6A",
+  Cancelled = "red",
 }
 const statuscolor = (item: any) => {
   switch (item.status) {
@@ -22,6 +23,8 @@ const statuscolor = (item: any) => {
       return Status.Pending;
     case "Rejected":
       return Status.Rejected;
+    case "Cancelled":
+      return Status.Cancelled;
     default:
       return Status.Pending;
   }

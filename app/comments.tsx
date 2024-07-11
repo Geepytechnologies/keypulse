@@ -142,7 +142,12 @@ const comments = (props: Props) => {
         )}
         {/* ismymessage */}
         {ismyMessage && (
-          <View style={{ marginTop: 25 }}>
+          <View
+            style={{
+              marginTop: 25,
+              alignContent: "flex-end",
+            }}
+          >
             <Text style={{ textAlign: "center", color: "gray", fontSize: 14 }}>
               {Helpers.formatDate(item.date)}
             </Text>
@@ -152,10 +157,11 @@ const comments = (props: Props) => {
                 {
                   paddingVertical: 5,
                   gap: 12,
+                  justifyContent: "flex-end",
                 },
               ]}
             >
-              <View style={{ maxWidth: "80%" }}>
+              <View style={{ minWidth: "50%" }}>
                 <Text style={styles.timeforme}>{localTime}</Text>
                 <View style={[styles.chatconforme]}>
                   {item.reply_id !== "0" && item.reply_id !== null && (
@@ -196,7 +202,7 @@ const comments = (props: Props) => {
         myInit
       );
       const invertedcomments = response.quote_comments.reverse();
-      console.log(invertedcomments);
+      // console.log(invertedcomments);
       setComments(invertedcomments);
       // setLastFetchedDate(invertedcomments[invertedcomments.length - 1]?.date);
     } catch (error) {

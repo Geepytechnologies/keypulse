@@ -57,11 +57,10 @@ const HomeScreen = () => {
     };
     try {
       const res = await API.get("quotes", "", myInit);
-      console.log(res.quotes);
       const filteredquotes = res.quotes.filter(
         (q: any) => q.status !== "Approved"
       );
-      setQuotes(filteredquotes);
+      setQuotes(res.quotes);
       // console.log("myresponse", res);
     } catch (error) {
       console.log(error);

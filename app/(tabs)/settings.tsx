@@ -22,10 +22,22 @@ import Subscription from "@/assets/images/icons/subscription-thick.svg";
 import Info from "@/assets/images/icons/info.svg";
 import Logout from "@/assets/images/icons/logout-thick.svg";
 import Flag from "@/assets/images/icons/flag.svg";
+import { Auth } from "aws-amplify";
+import { useDispatch } from "react-redux";
+import { SIGNOUT } from "@/config/slices/userSlice";
 
 type Props = {};
 
 const settings = (props: Props) => {
+  const dispatch = useDispatch();
+  const signout = async () => {
+    try {
+      await Auth.signOut();
+      dispatch(SIGNOUT());
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
   return (
     <SafeAreaView style={{ backgroundColor: Colors.primary }}>
       <StatusBar style="light" />
@@ -82,12 +94,7 @@ const settings = (props: Props) => {
                   Subscription
                 </Text>
               </TouchableOpacity>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
-                <Notification />
-                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
-                  Notifications
-                </Text>
-              </View>
+
               <TouchableOpacity
                 onPress={() => router.push("changepassword")}
                 activeOpacity={0.7}
@@ -138,12 +145,16 @@ const settings = (props: Props) => {
                   Report a problem
                 </Text>
               </View>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={signout}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
                 <Logout />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Log out
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

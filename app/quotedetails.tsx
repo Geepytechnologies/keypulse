@@ -67,7 +67,7 @@ const quotedetails = (props: Props) => {
       // InitializePaymentsheet();
       return res.paymentIntent;
     } catch (error: any) {
-      console.error("Error fetching client secret:", error.message);
+      // console.error("Error fetching client secret:", error.message);
     }
   };
 

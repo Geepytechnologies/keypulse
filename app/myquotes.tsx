@@ -35,7 +35,7 @@ const myquotes = (props: Props) => {
       const filteredquotes = res.quotes.filter(
         (q: any) => q.status !== "Approved"
       );
-      setQuotes(filteredquotes);
+      setQuotes(res.quotes);
     } catch (error) {
       console.log(error);
     }
@@ -73,8 +73,8 @@ const myquotes = (props: Props) => {
         </Text>
       </View>
       {/* body */}
-      <ScrollView style={styles.body}>
-        <View style={{ flex: 1 }}>
+      <ScrollView showsVerticalScrollIndicator={false} style={[styles.body]}>
+        <View style={{ paddingBottom: 100 }}>
           {!quotes.length && (
             <View style={[globalstyles.centerview, { flex: 1 }]}>
               <Text
