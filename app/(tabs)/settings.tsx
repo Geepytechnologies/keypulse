@@ -85,26 +85,7 @@ const settings = (props: Props) => {
                   Edit profile
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => router.push("managesubscription")}
-                activeOpacity={0.7}
-                style={[globalstyles.rowview, { gap: 15 }]}
-              >
-                <Subscription />
-                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
-                  Manage Subscription
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => router.push("myquotes")}
-                style={[globalstyles.rowview, { gap: 15 }]}
-              >
-                <Quote />
-                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
-                  Manage Quotes
-                </Text>
-              </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => router.push("changepassword")}
                 activeOpacity={0.7}
@@ -129,6 +110,26 @@ const settings = (props: Props) => {
                 <Card />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
                   Billing History
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push("managesubscription")}
+                activeOpacity={0.7}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
+                <Subscription />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Manage Subscription
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => router.push("myquotes")}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
+                <Quote />
+                <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
+                  Manage Quotes
                 </Text>
               </TouchableOpacity>
               <View style={[globalstyles.rowview, { gap: 15 }]}>

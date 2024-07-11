@@ -42,14 +42,16 @@ const quotedetails = (props: Props) => {
   };
 
   const InitializePaymentsheet = async () => {
-    const { error } = await initPaymentSheet({
+    const { error, paymentOption } = await initPaymentSheet({
       merchantDisplayName: "keypulse",
+      customFlow: true,
       paymentIntentClientSecret: secret,
       returnURL: "keypulse://stripe-redirect",
     });
     if (error) {
       // console.warn("frominitialize", error.message);
     }
+    console.log("option", paymentOption?.label);
   };
 
   const fetchClientSecret = async () => {

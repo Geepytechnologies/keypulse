@@ -199,10 +199,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         <TouchableOpacity
           onPress={signout}
           activeOpacity={0.6}
-          style={[
-            globalstyles.rowview,
-            { padding: 12, gap: 10, paddingBottom: 50 },
-          ]}
+          style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Logout />
           <Text
