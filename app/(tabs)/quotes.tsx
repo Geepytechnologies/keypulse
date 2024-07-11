@@ -64,7 +64,7 @@ const quotes = (props: Props) => {
     setExpanded(!expanded);
   };
   const [loading, setLoading] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState("");
   const [services, setServices] = useState<IServiceDTO[]>([]);
   const [serviceItems, setServiceItems] = useState<any>([]);
   const [serviceTerms, setServiceTerms] = useState("Choose Service");
@@ -403,9 +403,6 @@ const quotes = (props: Props) => {
             },
           ]}
         >
-          <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
-            <Feather name="arrow-left" size={24} color="white" />
-          </TouchableOpacity>
           <Text
             style={{
               fontFamily: Fonts.nun700,
@@ -434,7 +431,7 @@ const quotes = (props: Props) => {
                       setSelectedService(itemValue)
                     }
                   >
-                    <Picker.Item label="Select Service" value="" />
+                    <Picker.Item label="Select Service" value={""} />
                     {services.map((service, index) => (
                       <Picker.Item
                         key={index}
@@ -445,7 +442,7 @@ const quotes = (props: Props) => {
                   </Picker>
                 </View>
 
-                {selectedService !== null && (
+                {selectedService !== "" && (
                   <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
                     <View
                       style={[

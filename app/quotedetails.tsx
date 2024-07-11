@@ -40,13 +40,22 @@ const quotedetails = (props: Props) => {
       Alert.alert("Success", "Your payment was successful.");
     }
   };
-
+  // const confirmHandler = async (paymentMethod, shouldSavePaymentMethod, intentCreationCallback) => {
+  //   // explained later
+  // }
   const InitializePaymentsheet = async () => {
     const { error, paymentOption } = await initPaymentSheet({
       merchantDisplayName: "keypulse",
-      customFlow: true,
+      // customFlow: true,
       paymentIntentClientSecret: secret,
       returnURL: "keypulse://stripe-redirect",
+      // intentConfiguration: {
+      //   mode: {
+      //     amount: 1099,
+      //     currencyCode: 'USD',
+      //   },
+      //   confirmHandler: handleConfirmation
+      // }
     });
     if (error) {
       // console.warn("frominitialize", error.message);
