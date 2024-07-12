@@ -54,13 +54,15 @@ const AuthProvider = ({ children }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (!currentuser && !authGroup) {
-      router.replace("(auth)/login");
+    if (!loading) {
+      if (!currentuser && !authGroup) {
+        router.replace("(auth)/login");
+      }
+      if (currentuser) {
+        router.replace("(tabs)");
+      }
     }
-    if (currentuser) {
-      router.replace("(tabs)");
-    }
-  }, [currentuser]);
+  }, [currentuser, loading]);
 
   // if (loading) {
   //   return (
@@ -70,14 +72,14 @@ const AuthProvider = ({ children }: Props) => {
   //     </View>
   //   );
   // }
-  // if (loading) {
-  //   return (
-  //     <View style={[globalstyles.centerview, { flex: 1 }]}>
-  //       <ActivityIndicator />
-  //       <Text>Loading...</Text>
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <View style={[globalstyles.centerview, { flex: 1 }]}>
+        <ActivityIndicator />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return <>{children}</>;
 };

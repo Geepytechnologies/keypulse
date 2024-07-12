@@ -583,7 +583,7 @@ const quotes = (props: Props) => {
             {/* more parameters */}
             {servicedetails.fields &&
               servicedetails.fields.map((item: any, index: any) => (
-                <View style={{ gap: 5, flex: 1 }}>
+                <View key={index} style={{ gap: 5, flex: 1 }}>
                   <Text style={[styles.label, { textTransform: "capitalize" }]}>
                     {Helpers.namify(item.field_name)}
                   </Text>
@@ -595,7 +595,7 @@ const quotes = (props: Props) => {
                       >
                         <Picker.Item label="Select State" value="" />
                         {states.map((item: string | undefined, index: any) => (
-                          <Picker.Item label={item} value={item} />
+                          <Picker.Item key={index} label={item} value={item} />
                         ))}
                       </Picker>
                     </View>
@@ -612,7 +612,11 @@ const quotes = (props: Props) => {
                         <Picker.Item label="Select Condition" value="" />
                         {dropdownData[item.field_name].map(
                           (item: string | undefined, index: any) => (
-                            <Picker.Item label={item} value={item} />
+                            <Picker.Item
+                              key={index}
+                              label={item}
+                              value={item}
+                            />
                           )
                         )}
                       </Picker>

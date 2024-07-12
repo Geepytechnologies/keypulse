@@ -22,8 +22,8 @@ import Quotecard from "@/components/cards/Quotecard";
 import Sidebar from "@/components/Sidebar";
 import { useSharedValue } from "react-native-reanimated";
 import Modal from "react-native-modal";
-import { useEffect, useRef, useState } from "react";
-import { Link } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useFocusEffect, useNavigation } from "expo-router";
 import { API, Auth } from "aws-amplify";
 import { ScreenDimensions } from "@/constants/Dimensions";
 import React from "react";
@@ -66,9 +66,17 @@ const HomeScreen = () => {
       console.log(error);
     }
   };
+  useFocusEffect(
+    useCallback(() => {
+      getQuotes();
+
+      return;
+    }, [])
+  );
   useEffect(() => {
     getQuotes();
   }, []);
+
   return (
     <>
       <StatusBar style="light" />

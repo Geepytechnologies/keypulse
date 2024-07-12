@@ -10,6 +10,16 @@
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_STRIPE_PUBLISHBLE_KEY": "pk_test_51NAhk4EYLaW39pmvmk9S1HIlssiq9t2SbOIwG0gsDPxpVa3XQlJEqeG6MjBTzhGhRpSzlIy9UuB1Zd0MaFcpznRf00DklgJ3N3",
+        "EXPO_PUBLIC_HOSTNAME": "https://apidev.myfamilypa.com/customer/",
+        "EXPO_PUBLIC_REGION": "us-east-2",
+        "EXPO_PUBLIC_USER_POOL_ID": "us-east-2_2DBVzE7eC",
+        "EXPO_PUBLIC_USER_POOL_CLIENT_ID": "7sh7ttcr5ta3o01o3ik2b1h41b",
+        "EXPO_PUBLIC_USER_POOL_REGION": "us-east-2",
+        "EXPO_PUBLIC_IDENTITY_POOL_ID": "us-east-2:0f3c4c84-9b4e-4b92-9b54-94db4a3db18e",
+        "EXPO_PUBLIC_BUCKET_NAME": "myfamilypa-static-content-dev"
       }
     },
     "preview2": {
