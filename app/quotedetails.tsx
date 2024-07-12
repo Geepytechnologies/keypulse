@@ -28,39 +28,56 @@ const quotedetails = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [secret, setSecret] = useState("");
+  const [quote, setQuote] = useState<any>();
+  const [paymentupdate, setPaymentUpdate] = useState(false);
+
+  const getQuote = async () => {
+    const session: any = await Auth.currentSession().catch((e) => {
+      console.log(e);
+    });
+    const myInit = {
+      headers: {
+        Authorization: session.idToken.jwtToken,
+      },
+    };
+    setLoading(true);
+    try {
+      const res = await API.get("quotes", "", myInit);
+      const selectedQuote = res.quotes.filter(
+        (item: any) => item.id == quoteitems.id
+      );
+      setQuote(selectedQuote[0]);
+      console.log("myresponse", selectedQuote);
+    } catch (error: any) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getQuote();
+  }, [paymentupdate]);
 
   const onCheckout = async () => {
-    await InitializePaymentsheet();
     const { error: paymentsheetError } = await presentPaymentSheet();
     if (paymentsheetError) {
       console.log("Payment failed:", paymentsheetError);
       Alert.alert(paymentsheetError.code, paymentsheetError.message);
     } else {
       console.log("Payment successful!");
-      Alert.alert("Success", "Your payment was successful.");
+      setPaymentUpdate(!paymentupdate);
+      Alert.alert("Success", "Your Order was confirmed.");
     }
   };
-  // const confirmHandler = async (paymentMethod, shouldSavePaymentMethod, intentCreationCallback) => {
-  //   // explained later
-  // }
-  const InitializePaymentsheet = async () => {
-    const { error, paymentOption } = await initPaymentSheet({
+  const InitializePaymentsheet = async (secret: string) => {
+    const { error } = await initPaymentSheet({
       merchantDisplayName: "keypulse",
-      // customFlow: true,
       paymentIntentClientSecret: secret,
       returnURL: "keypulse://stripe-redirect",
-      // intentConfiguration: {
-      //   mode: {
-      //     amount: 1099,
-      //     currencyCode: 'USD',
-      //   },
-      //   confirmHandler: handleConfirmation
-      // }
     });
     if (error) {
-      // console.warn("frominitialize", error.message);
+      console.warn("frominitialize", error.message + ": " + secret);
     }
-    console.log("option", paymentOption?.label);
   };
 
   const fetchClientSecret = async () => {
@@ -73,9 +90,7 @@ const quotedetails = (props: Props) => {
         headers: { Authorization: session.idToken.jwtToken },
       };
       const res = await API.post("quote_secret", ``, myInit);
-      console.log("intent", res.paymentIntent);
-      setSecret(res.paymentIntent);
-      // InitializePaymentsheet();
+      await InitializePaymentsheet(res.paymentIntent);
       return res.paymentIntent;
     } catch (error: any) {
       // console.error("Error fetching client secret:", error.message);
@@ -144,59 +159,63 @@ const quotedetails = (props: Props) => {
       </View>
       {/* body */}
       <ScrollView style={[styles.body, { display: "flex" }]}>
-        <View>
-          <QuotedetailCard item={quoteitems} />
-          {/* buttons */}
-          <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
-            {quoteitems.status == "Awaiting Customer Approval" &&
-              quoteitems.status !== "Cancelled" && (
-                <TouchableOpacity
-                  onPress={onCheckout}
-                  activeOpacity={0.8}
-                  style={styles.commentbtn}
-                >
-                  <Text style={styles.comment}>Approve</Text>
-                </TouchableOpacity>
-              )}
-            {quoteitems.status !== "Cancelled" && (
+        {quote && (
+          <>
+            <View>
+              <QuotedetailCard item={quote} />
+              {/* buttons */}
+              <View style={[globalstyles.rowview, { gap: 8, marginTop: 15 }]}>
+                {quote.status == "Awaiting Customer Approval" &&
+                  quote.status !== "Cancelled" && (
+                    <TouchableOpacity
+                      onPress={onCheckout}
+                      activeOpacity={0.8}
+                      style={styles.commentbtn}
+                    >
+                      <Text style={styles.comment}>Approve</Text>
+                    </TouchableOpacity>
+                  )}
+                {quote.status !== "Cancelled" && (
+                  <TouchableOpacity
+                    onPress={CancelQuote}
+                    disabled={loading}
+                    activeOpacity={0.8}
+                    style={styles.cancelbtn}
+                  >
+                    <Text style={styles.cancel}>
+                      {loading ? "Cancelling..." : "Cancel"}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+            {/* comments */}
+            <View style={{ marginTop: 15 }}>
               <TouchableOpacity
-                onPress={CancelQuote}
-                disabled={loading}
                 activeOpacity={0.8}
-                style={styles.cancelbtn}
+                onPress={() =>
+                  router.push({
+                    pathname: "comments",
+                    params: { quote_id: quote.id },
+                  })
+                }
+                style={{ gap: 10 }}
               >
-                <Text style={styles.cancel}>
-                  {loading ? "Cancelling..." : "Cancel"}
+                <Text
+                  style={{
+                    fontFamily: Fonts.pop700,
+                    fontSize: 12,
+                    color: "#545871",
+                    textDecorationLine: "underline",
+                    textAlign: "center",
+                  }}
+                >
+                  Show Comments
                 </Text>
               </TouchableOpacity>
-            )}
-          </View>
-        </View>
-        {/* comments */}
-        <View style={{ marginTop: 15 }}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() =>
-              router.push({
-                pathname: "comments",
-                params: { quote_id: quoteitems.id },
-              })
-            }
-            style={{ gap: 10 }}
-          >
-            <Text
-              style={{
-                fontFamily: Fonts.pop700,
-                fontSize: 12,
-                color: "#545871",
-                textDecorationLine: "underline",
-                textAlign: "center",
-              }}
-            >
-              Show Comments
-            </Text>
-          </TouchableOpacity>
-        </View>
+            </View>
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

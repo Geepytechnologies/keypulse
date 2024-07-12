@@ -1,8 +1,20 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useEffect } from "react";
 import { Fonts } from "@/constants/Fonts";
 import { globalstyles } from "@/styles/common";
 import { Colors } from "@/constants/Colors";
+import {
+  initPaymentSheet,
+  presentPaymentSheet,
+} from "@stripe/stripe-react-native";
+import { API, Auth } from "aws-amplify";
 
 type Props = {
   item: {
@@ -11,11 +23,13 @@ type Props = {
     amount_paid: string;
     last4: string;
     status: string;
+    id: string;
   };
+  paymentsheetloading: boolean;
   checkout: any;
 };
 
-const BillingCard = ({ item, checkout }: Props) => {
+const BillingCard = ({ item, checkout, paymentsheetloading }: Props) => {
   return (
     <View style={styles.container}>
       <View>
@@ -41,7 +55,7 @@ const BillingCard = ({ item, checkout }: Props) => {
         </View>
         {item.status == "Pending" && (
           <TouchableOpacity
-            onPress={checkout}
+            onPress={() => checkout(item.id)}
             style={{
               backgroundColor: Colors.primary,
               borderRadius: 12,
@@ -50,11 +64,19 @@ const BillingCard = ({ item, checkout }: Props) => {
             }}
             activeOpacity={0.8}
           >
-            <Text
-              style={{ fontSize: 16, color: "white", fontFamily: Fonts.pop500 }}
-            >
-              Pay
-            </Text>
+            {paymentsheetloading ? (
+              <ActivityIndicator color={"white"} size={24} />
+            ) : (
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "white",
+                  fontFamily: Fonts.pop500,
+                }}
+              >
+                Pay
+              </Text>
+            )}
           </TouchableOpacity>
         )}
       </View>
