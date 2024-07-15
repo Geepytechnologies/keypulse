@@ -26,6 +26,7 @@ import { Auth } from "aws-amplify";
 import { useDispatch } from "react-redux";
 import { SIGNOUT } from "@/config/slices/userSlice";
 import Quote from "@/assets/images/icons/quote.svg";
+import RazorPay from "@/components/RazorPay";
 
 type Props = {};
 
@@ -70,6 +71,7 @@ const settings = (props: Props) => {
       </View>
       {/* body */}
       <ScrollView style={styles.body}>
+        <RazorPay />
         <View style={{ gap: 26 }}>
           {/* 1 */}
           <View style={{ gap: 13 }}>
