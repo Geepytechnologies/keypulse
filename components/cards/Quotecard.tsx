@@ -111,7 +111,7 @@ const Quotecard = ({ item }: Props) => {
         </View>
       </View>
       <View style={{ gap: 11 }}>
-        <Text
+        {/* <Text
           style={{
             fontFamily: Fonts.pop500,
             fontSize: 10,
@@ -120,7 +120,7 @@ const Quotecard = ({ item }: Props) => {
           }}
         >
           Cancel
-        </Text>
+        </Text> */}
         <View
           style={[
             globalstyles.centerview,

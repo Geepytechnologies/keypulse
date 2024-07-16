@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   bannercon: {
     width: "100%",
     borderColor: "#545871",
-    borderWidth: 2,
+    // borderWidth: 2,
     borderRadius: 13,
     backgroundColor: "#f0f1f7",
     transform: [{ translateY: -60 }],

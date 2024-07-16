@@ -385,7 +385,7 @@ const quotes = (props: Props) => {
   useEffect(() => {
     getServices();
   }, []);
-  // console.log(states);
+  // console.log(servicedetails);
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -441,85 +441,9 @@ const quotes = (props: Props) => {
                     ))}
                   </Picker>
                 </View>
-
-                {selectedService !== "" && (
-                  <TouchableOpacity activeOpacity={0.8} style={styles.inputcon}>
-                    <View
-                      style={[
-                        globalstyles.rowview,
-                        { justifyContent: "space-between" },
-                      ]}
-                    >
-                      <Text
-                        style={{
-                          fontFamily: Fonts.pop400,
-                          fontSize: 12,
-                          lineHeight: 22,
-                          color: "#64748B",
-                        }}
-                      >
-                        Items
-                      </Text>
-                    </View>
-                    <View
-                      style={[styles.dropdownContent, { minHeight: animation }]}
-                    >
-                      {serviceItems &&
-                        serviceItems.map(
-                          (item: any, index: React.Key | null | undefined) => (
-                            <View style={{ marginBottom: 10 }} key={index}>
-                              <Itemcard
-                                key={index}
-                                title={item.name}
-                                content={item.description}
-                              />
-                            </View>
-                          )
-                        )}
-                    </View>
-                  </TouchableOpacity>
-                )}
               </View>
             </View>
-            {/* address */}
-            {/* <View style={{ gap: 10 }}>
-              <Text style={styles.coloredheader}>
-                Please provide the address where you need the service
-              </Text>
-              <View style={{ gap: 5 }}>
-                <Text style={styles.label}>Select existing address</Text>
-                <TouchableOpacity activeOpacity={0.7} style={styles.inputcon}>
-                  <View
-                    style={[
-                      globalstyles.rowview,
-                      { justifyContent: "space-between" },
-                    ]}
-                  >
-                    <Text>123 ACD Drive Hyderabad, 15</Text>
-                    <Radiofill />
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={styles.inputcon}>
-                  <View
-                    style={[
-                      globalstyles.rowview,
-                      { justifyContent: "space-between" },
-                    ]}
-                  >
-                    <Text>123 ACD Drive Hyderabad, 15</Text>
-                    <RadioOutline />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <Text
-                style={[
-                  styles.label,
-                  { color: Colors.primary, textAlign: "center" },
-                ]}
-              >
-                +Add New Address
-              </Text>
-            </View> */}
+
             {/* state and city */}
             <View style={[globalstyles.rowview, { gap: 10 }]}>
               {/* state */}

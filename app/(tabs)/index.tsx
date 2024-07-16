@@ -60,7 +60,7 @@ const HomeScreen = () => {
       const filteredquotes = res.quotes.filter(
         (q: any) => q.status !== "Approved"
       );
-      setQuotes(res.quotes);
+      setQuotes(filteredquotes);
       // console.log("myresponse", res);
     } catch (error) {
       console.log(error);
@@ -95,15 +95,18 @@ const HomeScreen = () => {
               },
             ]}
           >
-            <TouchableOpacity activeOpacity={0.8} onPress={() => toggleModal()}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={() => toggleModal()}
+            >
               <Menu />
             </TouchableOpacity>
-            <View style={[globalstyles.rowview, { gap: 10 }]}>
+            {/* <View style={[globalstyles.rowview, { gap: 10 }]}>
               <Image
                 style={styles.profileimg}
                 source={require("@/assets/images/avatar1.png")}
               />
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.bottomsection}>

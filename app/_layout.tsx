@@ -127,6 +127,7 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="comments" options={{ headerShown: false }} />
+            <Stack.Screen name="contact" options={{ headerShown: false }} />
             <Stack.Screen name="you" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>

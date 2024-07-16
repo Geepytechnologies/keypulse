@@ -73,7 +73,7 @@ const QuotedetailCard = ({ item }: Props) => {
 
           <View
             style={{
-              backgroundColor: statuscolor(item),
+              // backgroundColor: statuscolor(item),
               paddingVertical: 10,
               paddingHorizontal: 7,
               borderRadius: 5,
@@ -84,7 +84,7 @@ const QuotedetailCard = ({ item }: Props) => {
               style={{
                 fontFamily: Fonts.pop600,
                 fontSize: 12,
-                color: "#fff",
+                color: "#64748B",
                 lineHeight: 18,
               }}
             >
@@ -95,7 +95,7 @@ const QuotedetailCard = ({ item }: Props) => {
       </View>
       <View
         style={{
-          backgroundColor: "#54587138",
+          // backgroundColor: "#54587138",
           borderRadius: 5,
           padding: 5,
           marginTop: 20,
