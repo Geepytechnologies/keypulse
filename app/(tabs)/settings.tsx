@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { SIGNOUT } from "@/config/slices/userSlice";
 import Quote from "@/assets/images/icons/quote.svg";
 import RazorPay from "@/components/RazorPay";
+import Call from "@/assets/images/icons/call.svg";
 
 type Props = {};
 
@@ -152,12 +153,15 @@ const settings = (props: Props) => {
           <View style={{ gap: 13 }}>
             <Text style={styles.headertext}>Actions</Text>
             <View style={styles.box}>
-              <View style={[globalstyles.rowview, { gap: 15 }]}>
-                <Flag />
+              <TouchableOpacity
+                onPress={() => router.push("contact")}
+                style={[globalstyles.rowview, { gap: 15 }]}
+              >
+                <Call />
                 <Text style={{ fontFamily: Fonts.pop400, fontSize: 14 }}>
-                  Report a problem
+                  Contact Us
                 </Text>
-              </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={signout}

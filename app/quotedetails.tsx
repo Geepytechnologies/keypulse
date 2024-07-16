@@ -1,5 +1,6 @@
 import {
   Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,6 +20,8 @@ import QuotedetailCard from "@/components/cards/QuotedetailCard";
 import Commentbox from "@/components/Commentbox";
 import { API, Auth } from "aws-amplify";
 import { useStripe } from "@stripe/stripe-react-native";
+import Modal from "react-native-modal";
+import ConfirmQuoteCancellationModal from "@/components/modals/ConfirmQuoteCancellationModal";
 
 type Props = {};
 
@@ -30,6 +33,15 @@ const quotedetails = (props: Props) => {
   const [secret, setSecret] = useState("");
   const [quote, setQuote] = useState<any>();
   const [paymentupdate, setPaymentUpdate] = useState(false);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const Backdrop = () => {
+    return <View style={{ flex: 1, backgroundColor: "black" }}></View>;
+  };
 
   const getQuote = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
@@ -177,7 +189,7 @@ const quotedetails = (props: Props) => {
                   )}
                 {quote.status !== "Cancelled" && (
                   <TouchableOpacity
-                    onPress={CancelQuote}
+                    onPress={toggleModal}
                     disabled={loading}
                     activeOpacity={0.8}
                     style={styles.cancelbtn}
@@ -217,6 +229,20 @@ const quotedetails = (props: Props) => {
           </>
         )}
       </ScrollView>
+      <Modal
+        style={{ margin: 0 }}
+        isVisible={isModalVisible}
+        onBackdropPress={toggleModal}
+        swipeDirection={["down"]}
+        onSwipeComplete={toggleModal}
+        propagateSwipe={true}
+        customBackdrop={<Backdrop />}
+      >
+        <ConfirmQuoteCancellationModal
+          toggleModal={toggleModal}
+          CancelQuote={CancelQuote}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };

@@ -64,7 +64,6 @@ const subscription = (props: Props) => {
     }
   };
   useEffect(() => {
-    console.log("i changed");
     getBilings();
   }, [updateUI]);
   const onCheckout = async (id: string) => {

@@ -35,7 +35,7 @@ const myquotes = (props: Props) => {
       const filteredquotes = res.quotes.filter(
         (q: any) => q.status !== "Approved"
       );
-      setQuotes(res.quotes);
+      setQuotes(filteredquotes);
     } catch (error) {
       console.log(error);
     }

@@ -93,6 +93,12 @@ const config = {
         region: region,
         endpoint: `${url}home`,
       },
+      {
+        name: "business",
+        service: "lambda",
+        region: region,
+        endpoint: `${url}business`,
+      },
     ],
   },
 };
