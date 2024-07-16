@@ -43,7 +43,7 @@ const AuthProvider = ({ children }: Props) => {
       dispatch(SIGNIN(res.attributes));
     } catch (error) {
       dispatch(SIGNOUT());
-      router.replace("(auth)/login");
+      // router.replace("(auth)/login");
     } finally {
       setLoading(false);
     }

@@ -34,13 +34,14 @@ const BillingCard = ({ item, checkout, paymentsheetloading }: Props) => {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={[styles.header]}>Subscription Id</Text>
-        <Text style={[styles.content]}>S-{item.subscription_id}</Text>
-      </View>
-      <View>
         <Text style={[styles.header]}>Billing Id</Text>
         <Text style={[styles.content]}>{item.id}</Text>
       </View>
+      <View>
+        <Text style={[styles.header]}>Subscription Id</Text>
+        <Text style={[styles.content]}>S-{item.subscription_id}</Text>
+      </View>
+
       <View>
         <Text style={[styles.header]}>Transaction Time</Text>
         <Text style={[styles.content]}>{item.payment_date}</Text>
