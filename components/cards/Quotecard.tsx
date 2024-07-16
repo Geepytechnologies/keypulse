@@ -46,7 +46,10 @@ const Quotecard = ({ item }: Props) => {
       ]}
     >
       <View
-        style={[globalstyles.rowview, { height: "100%", gap: 15, flex: 1 }]}
+        style={[
+          globalstyles.rowview,
+          { height: "100%", gap: 15, width: "60%" },
+        ]}
       >
         <View
           style={[
@@ -110,51 +113,30 @@ const Quotecard = ({ item }: Props) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{ gap: 11 }}>
-        {/* <Text
-          style={{
-            fontFamily: Fonts.pop500,
-            fontSize: 10,
-            color: "#FF6A6A",
-            textDecorationLine: "underline",
-          }}
-        >
-          Cancel
-        </Text> */}
-        <View
-          style={[
-            globalstyles.centerview,
-            {
-              backgroundColor: "#545871",
-              borderRadius: 5,
-              padding: 5,
-              maxWidth: 75,
-            },
-          ]}
-        >
+      <View style={{ flex: 1 }}>
+        <View style={{ gap: 11 }}>
+          {/* <Text
+            style={{
+              fontFamily: Fonts.pop500,
+              fontSize: 10,
+              color: "#FF6A6A",
+              textDecorationLine: "underline",
+            }}
+          >
+            Cancel
+          </Text> */}
+
           <Text
-            style={{ fontSize: 14, fontFamily: Fonts.pop600, color: "#fff" }}
+            style={{ fontSize: 14, fontFamily: Fonts.pop600, color: "#000" }}
           >
             {item.amount || "00.00"}
           </Text>
-        </View>
-        <View
-          style={[
-            globalstyles.centerview,
-            {
-              backgroundColor: statuscolor(item),
-              paddingVertical: 10,
-              paddingHorizontal: 7,
-              borderRadius: 5,
-              maxWidth: 150,
-            },
-          ]}
-        >
+
           <Text
             style={{
               fontFamily: Fonts.pop600,
               fontSize: 12,
-              color: "#fff",
+              color: "#000",
               lineHeight: 18,
             }}
           >
