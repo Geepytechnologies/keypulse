@@ -83,7 +83,10 @@ const quotes = (props: Props) => {
     locations: [],
     frequencies: [],
   });
-  const [additionalFields, setAdditionalFields] = useState({ date: "" });
+  const [additionalFields, setAdditionalFields] = useState({
+    date: "",
+    condition: "",
+  });
   const [formDetails, setFormDetails] = useState({
     state: "",
     location_id: "",
@@ -524,14 +527,21 @@ const quotes = (props: Props) => {
                       </Picker>
                     </View>
                   ) : item.field_type === "desc" ? (
-                    <View style={[styles.inputcon]}></View>
+                    <View style={[styles.inputcon]}>
+                      <TextInput placeholder="Text here" />
+                    </View>
                   ) : item.field_type === "bool" ? (
                     <View style={[styles.inputcon]}></View>
                   ) : item.field_type === "dd" ? (
                     <View style={[styles.inputcon]}>
                       <Picker
-                        selectedValue={selectedService}
-                        onValueChange={(itemValue, itemIndex) => {}}
+                        selectedValue={additionalFields.condition}
+                        onValueChange={(itemValue, itemIndex) => {
+                          setAdditionalFields({
+                            ...additionalFields,
+                            condition: itemValue,
+                          });
+                        }}
                       >
                         <Picker.Item label="Select Condition" value="" />
                         {dropdownData[item.field_name].map(
