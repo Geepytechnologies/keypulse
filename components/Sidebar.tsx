@@ -44,7 +44,7 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
   const [statusBarHeight, setStatusBarHeight] = useState(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      width: withTiming(sidebarWidth.value, {
+      width: withTiming(322, {
         duration: 200,
         easing: Easing.inOut(Easing.ease),
       }),
@@ -109,7 +109,9 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
       <View style={{ paddingTop: 20, gap: 8 }}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.push("editprofile")}
+          onPress={() => {
+            toggleModal(), router.push("editprofile");
+          }}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <User />
@@ -127,7 +129,9 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.push("myquotes")}
+          onPress={() => {
+            toggleModal(), router.push("myquotes");
+          }}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Quote />
@@ -144,7 +148,9 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.push("subscription")}
+          onPress={() => {
+            toggleModal(), router.push("subscription");
+          }}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Money />
@@ -161,7 +167,9 @@ const Sidebar = ({ sidebarWidth, toggleModal }: Props) => {
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => router.push("managesubscription")}
+          onPress={() => {
+            toggleModal(), router.push("managesubscription");
+          }}
           style={[globalstyles.rowview, { padding: 12, gap: 10 }]}
         >
           <Subscription />

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Menu from "@/assets/images/icons/menu.svg";
@@ -40,8 +41,9 @@ const HomeScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
+    // Alert.alert("clicked", sidebarWidth.value.toString() + isModalVisible);
     setModalVisible(!isModalVisible);
-    openSidebar();
+    // openSidebar();
   };
   const Backdrop = () => {
     return <View style={{ flex: 1, backgroundColor: "black" }}></View>;

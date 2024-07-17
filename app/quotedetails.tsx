@@ -107,7 +107,6 @@ const quotedetails = (props: Props) => {
         (item: any) => item.id == quoteitems.id
       );
       setQuote(selectedQuote[0]);
-      console.log("myresponse", selectedQuote);
     } catch (error: any) {
       console.log(error.message);
     } finally {
@@ -156,6 +155,8 @@ const quotedetails = (props: Props) => {
       Alert.alert(paymentsheetError.code, paymentsheetError.message);
     } else {
       console.log("Payment successful!");
+      router.push("managesubscription");
+
       setPaymentUpdate(!paymentupdate);
       Alert.alert("Success", "Your Order was confirmed.");
     }
