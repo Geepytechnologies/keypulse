@@ -26,10 +26,18 @@ type Props = {
     id: string;
   };
   paymentsheetloading: boolean;
-  checkout: any;
+  toggleModal: () => void;
+  stripeCheckout: () => void;
+  razorpayCheckout: () => void;
 };
 
-const BillingCard = ({ item, checkout, paymentsheetloading }: Props) => {
+const BillingCard = ({
+  item,
+  toggleModal,
+  stripeCheckout,
+  razorpayCheckout,
+  paymentsheetloading,
+}: Props) => {
   // console.log(item);
   return (
     <View style={styles.container}>
@@ -61,7 +69,7 @@ const BillingCard = ({ item, checkout, paymentsheetloading }: Props) => {
         </View>
         {item.status == "Pending" && (
           <TouchableOpacity
-            onPress={() => checkout(item.id)}
+            onPress={toggleModal}
             style={{
               backgroundColor: Colors.primary,
               borderRadius: 12,

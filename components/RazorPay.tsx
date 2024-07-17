@@ -1,15 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import RazorpayCheckout from "react-native-razorpay";
+import { Colors } from "@/constants/Colors";
+import { Keys } from "@/constants/Keys";
 
 type Props = {};
 
 const RazorPay = (props: Props) => {
   const handlePayment = () => {
     var options: any = {
-      description: "Credits towards consultation",
-      image: "https://i.imgur.com/3g7nmJC.jpg",
-      currency: "INR",
+      description: "Online payment for your quote",
+      image: "/assets/logo.png",
+      currency: "USD",
       key: "rzp_test_tcVAvRpRvaka56",
       amount: "5000",
       name: "Acme Corp",
@@ -19,7 +21,7 @@ const RazorPay = (props: Props) => {
         contact: "9191919191",
         name: "Gaurav Kumar",
       },
-      theme: { color: "#53a20e" },
+      theme: { color: Colors.primary },
     };
     RazorpayCheckout.open(options)
       .then((data) => {
@@ -28,6 +30,7 @@ const RazorPay = (props: Props) => {
       })
       .catch((error) => {
         // handle failure
+        console.log(error);
         alert(`Error: ${error.code} | ${error.description}`);
       });
   };
