@@ -30,7 +30,6 @@ import Modal from "react-native-modal";
 import ConfirmQuoteCancellationModal from "@/components/modals/ConfirmQuoteCancellationModal";
 import CheckoutModal from "@/components/modals/CheckoutModal";
 import { Keys } from "@/constants/Keys";
-import RazorpayCheckout from "react-native-razorpay";
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/store";
 
@@ -193,39 +192,6 @@ const quotedetails = (props: Props) => {
     fetchClientSecret();
   }, []);
 
-  //Razorpay checkout
-  const razorpayCheckout = () => {
-    var options: any = {
-      description: "Online payment for your quote",
-      image: "/assets/logo.png",
-      currency: "USD",
-      key: Keys.razorKey,
-      amount: (Number(quoteitems.amount) * 100).toFixed(0),
-      name: `Quote ${quoteitems.id} payment`,
-      order_id: quoteitems.razor_order_id,
-      prefill: {
-        email: userProfile.email,
-        contact: userProfile.phone,
-        name: `${userProfile.first_name} ${userProfile.last_name}`,
-      },
-
-      theme: { color: Colors.primary },
-    };
-    RazorpayCheckout.open(options)
-      .then((data) => {
-        // handle success
-        ApproveQuote();
-        Alert.alert("Success", "Your Order was confirmed.");
-        setPaymentUpdate(!paymentupdate);
-        toggleCheckoutModal();
-        console.log(`Success: ${data.razorpay_payment_id}`);
-      })
-      .catch((error) => {
-        Alert.alert("Error", "Payment failed.");
-        toggleCheckoutModal();
-        console.log(`Error: ${error.code} | ${error.description}`);
-      });
-  };
   const CancelQuote = async () => {
     const session: any = await Auth.currentSession().catch((e) => {
       console.log(e);
@@ -323,30 +289,6 @@ const quotedetails = (props: Props) => {
               </View>
             </View>
             {/* comments */}
-            <View style={{ marginTop: 15 }}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() =>
-                  router.push({
-                    pathname: "comments",
-                    params: { quote_id: quote.id },
-                  })
-                }
-                style={{ gap: 10 }}
-              >
-                <Text
-                  style={{
-                    fontFamily: Fonts.pop700,
-                    fontSize: 12,
-                    color: "#545871",
-                    textDecorationLine: "underline",
-                    textAlign: "center",
-                  }}
-                >
-                  Show Comments
-                </Text>
-              </TouchableOpacity>
-            </View>
           </>
         )}
       </ScrollView>
@@ -375,7 +317,6 @@ const quotedetails = (props: Props) => {
       >
         <CheckoutModal
           toggleModal={toggleCheckoutModal}
-          callRazorpay={razorpayCheckout}
           callStripe={stripeCheckout}
         />
       </Modal>

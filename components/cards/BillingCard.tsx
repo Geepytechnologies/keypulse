@@ -28,14 +28,12 @@ type Props = {
   paymentsheetloading: boolean;
   toggleModal: () => void;
   stripeCheckout: () => void;
-  razorpayCheckout: () => void;
 };
 
 const BillingCard = ({
   item,
   toggleModal,
   stripeCheckout,
-  razorpayCheckout,
   paymentsheetloading,
 }: Props) => {
   // console.log(item);

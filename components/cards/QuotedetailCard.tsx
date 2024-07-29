@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Fonts } from "@/constants/Fonts";
 import { Status } from "./Quotecard";
 import { Colors } from "@/constants/Colors";
 import { globalstyles } from "@/styles/common";
 import { Helpers } from "@/utils/helpers";
+import { router } from "expo-router";
 
 type Props = {
   item: any;
@@ -24,58 +25,33 @@ const QuotedetailCard = ({ item }: Props) => {
     }
   };
   return (
-    <View style={[styles.container, { margin: 5 }]}>
+    <View style={[styles.container, { margin: 5, backgroundColor: "#fcfcfd" }]}>
       <View style={[globalstyles.rowview, { justifyContent: "space-between" }]}>
         <View style={{ gap: 5 }}>
           <Text
             style={{
-              fontFamily: Fonts.nun400,
-              fontSize: 12,
-              lineHeight: 14.4,
+              fontFamily: Fonts.pop600,
+              lineHeight: 18,
+              color: "#545871",
             }}
           >
             Q-{item.id}
           </Text>
           <Text
             style={{
-              color: Colors.primary,
-              fontSize: 12,
               fontFamily: Fonts.pop600,
-              letterSpacing: 0.1,
-              lineHeight: 14.4,
-            }}
-          >
-            {item.service?.service_name}
-          </Text>
-          <Text
-            style={{
-              fontFamily: Fonts.pop300,
-              fontSize: 12,
+              lineHeight: 18,
               color: "#545871",
-              letterSpacing: 0.1,
             }}
           >
-            Exp.{" "}
-            <Text style={{ fontFamily: Fonts.pop700 }}> {item.expired_on}</Text>
-          </Text>
-        </View>
-        <View style={{ gap: 11 }}>
-          <Text
-            style={{
-              fontFamily: Fonts.pop400,
-              fontSize: 12,
-              color: "#64748B",
-              lineHeight: 22,
-            }}
-          >
+            <Text>Created: </Text>
             {Helpers.formatDate(item.created_on)}
           </Text>
-
           <View
             style={{
               // backgroundColor: statuscolor(item),
               paddingVertical: 10,
-              paddingHorizontal: 7,
+              // paddingHorizontal: 7,
               borderRadius: 5,
               maxWidth: 150,
             }}
@@ -83,34 +59,81 @@ const QuotedetailCard = ({ item }: Props) => {
             <Text
               style={{
                 fontFamily: Fonts.pop600,
-                fontSize: 12,
-                color: "#64748B",
+                lineHeight: 18,
+                color: "#545871",
+              }}
+            >
+              <Text>Status: </Text> {item.status}
+            </Text>
+          </View>
+        </View>
+        <View style={{ gap: 5 }}>
+          <Text
+            style={{
+              fontFamily: Fonts.pop600,
+              letterSpacing: 0.1,
+              color: "#545871",
+
+              lineHeight: 18,
+            }}
+          >
+            {item.service?.service_name}
+          </Text>
+          <Text
+            style={{
+              fontFamily: Fonts.pop600,
+              color: "#545871",
+              letterSpacing: 0.1,
+            }}
+          >
+            Expires:
+            <Text style={{ fontFamily: Fonts.pop600 }}> {item.expired_on}</Text>
+          </Text>
+          <View
+            style={{
+              // backgroundColor: "#54587138",
+              borderRadius: 5,
+              padding: 5,
+              marginTop: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: Fonts.pop600,
+                color: "#545871",
                 lineHeight: 18,
               }}
             >
-              {item.status}
+              <Text>Amount: </Text>
+              {item.amount || "0.00"}
             </Text>
           </View>
         </View>
       </View>
-      <View
-        style={{
-          // backgroundColor: "#54587138",
-          borderRadius: 5,
-          padding: 5,
-          marginTop: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: Fonts.pop600,
-            color: "#545871",
-            textAlign: "center",
-          }}
+      {/* show comments */}
+      <View style={{ marginTop: 10 }}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() =>
+            router.push({
+              pathname: "comments",
+              params: { quote_id: item.id },
+            })
+          }
+          style={{ gap: 10 }}
         >
-          {item.amount || "0.00"}
-        </Text>
+          <Text
+            style={{
+              fontFamily: Fonts.pop700,
+              fontSize: 12,
+              color: "#545871",
+              textDecorationLine: "underline",
+              textAlign: "right",
+            }}
+          >
+            Show Comments
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -127,12 +150,14 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: "auto",
     minHeight: 108,
+    borderWidth: 1.3,
+    borderColor: "black",
     // iOS
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.15,
-    shadowRadius: 7,
+    // shadowColor: "#000",
+    // shadowOffset: { width: 0, height: 0 },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 7,
     // Android
-    elevation: 5,
+    // elevation: 5,
   },
 });

@@ -20,7 +20,6 @@ import BillingCard from "@/components/cards/BillingCard";
 import { useStripe } from "@stripe/stripe-react-native";
 import Modal from "react-native-modal";
 import CheckoutModal from "@/components/modals/CheckoutModal";
-import RazorpayCheckout from "react-native-razorpay";
 import { Keys } from "@/constants/Keys";
 
 type Props = {};
@@ -146,40 +145,6 @@ const subscription = (props: Props) => {
     }
   };
 
-  //Razorpay checkout
-  const razorpayCheckout = () => {
-    var options: any = {
-      description: "Online payment for your quote",
-      image: "@/assets/logo.jpg",
-      currency: "USD",
-      key: Keys.razorKey,
-      amount: (Number(billingItem.amount_paid) * 100).toFixed(0),
-      name: `Billing ${billingItem.id} payment`,
-      order_id: billingItem.razor_order_id,
-      prefill: {
-        email: userProfile.email,
-        contact: userProfile.phone,
-        name: `${userProfile.first_name} ${userProfile.last_name}`,
-      },
-
-      theme: { color: Colors.primary },
-    };
-    RazorpayCheckout.open(options)
-      .then((data) => {
-        // handle success
-        updateBillingHistory();
-        Alert.alert("Success", "Your Order was confirmed.");
-        setUpdateUI(!updateUI);
-        toggleCheckoutModal();
-        console.log(`Success: ${data.razorpay_payment_id}`);
-        router.push("subscription");
-      })
-      .catch((error) => {
-        Alert.alert("Error", "Payment failed.");
-        toggleCheckoutModal();
-        console.log(`Error: ${error.code} | ${error.description}`);
-      });
-  };
   //Stripe checkout
   const stripeCheckout = async (id: string) => {
     await fetchClientSecret(id);
@@ -273,7 +238,6 @@ const subscription = (props: Props) => {
                   key={index}
                   item={item}
                   toggleModal={() => toggleCheckoutModalwithitem(item)}
-                  razorpayCheckout={razorpayCheckout}
                   stripeCheckout={() => stripeCheckout(item.id)}
                   paymentsheetloading={paymentsheetloading}
                 />
@@ -299,7 +263,6 @@ const subscription = (props: Props) => {
       >
         <CheckoutModal
           toggleModal={toggleCheckoutModal}
-          callRazorpay={razorpayCheckout}
           callStripe={() => stripeCheckout(billingItem.id)}
         />
       </Modal>

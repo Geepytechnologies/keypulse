@@ -12,15 +12,10 @@ import { globalstyles } from "@/styles/common";
 
 type Props = {
   toggleModal: () => void;
-  callRazorpay: () => void;
   callStripe: () => void;
 };
 
-const CheckoutModal = ({ toggleModal, callRazorpay, callStripe }: Props) => {
-  const handleRazorpay = () => {
-    // toggleModal();
-    callRazorpay();
-  };
+const CheckoutModal = ({ toggleModal, callStripe }: Props) => {
   const handleStripe = () => {
     toggleModal();
     callStripe();
@@ -46,13 +41,6 @@ const CheckoutModal = ({ toggleModal, callRazorpay, callStripe }: Props) => {
             { gap: 16, marginBottom: 40, marginTop: "auto" },
           ]}
         >
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={handleRazorpay}
-            style={styles.btn}
-          >
-            <Text style={styles.btntext}>Razor Payment</Text>
-          </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={handleStripe}
