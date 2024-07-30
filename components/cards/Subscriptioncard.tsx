@@ -120,8 +120,8 @@ const Subscriptioncard = ({ item, getSubscriptions }: Props) => {
           <Text style={[styles.content]}>{item.staff_phone || ""}</Text>
         </View>
         {item?.care_take_phones &&
-        item.care_take_phones.split(":").length > 0 ? (
-          item.care_taker_phones.split(":").map((phone: string) => (
+        item.care_take_phones?.split(":").length > 0 ? (
+          item.care_taker_phones?.split(":").map((phone: string) => (
             <View>
               <Text style={[styles.header]}>Care Taker</Text>
               <Text style={[styles.content]}>{phone}</Text>

@@ -67,7 +67,7 @@ const BillingCard = ({
         </View>
         {item.status == "Pending" && (
           <TouchableOpacity
-            onPress={toggleModal}
+            onPress={stripeCheckout}
             style={{
               backgroundColor: Colors.primary,
               borderRadius: 12,

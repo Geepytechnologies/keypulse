@@ -267,7 +267,7 @@ const quotedetails = (props: Props) => {
                 {quote.status == "Awaiting Customer Approval" &&
                   quote.status !== "Cancelled" && (
                     <TouchableOpacity
-                      onPress={toggleCheckoutModal}
+                      onPress={stripeCheckout}
                       activeOpacity={0.8}
                       style={styles.commentbtn}
                     >
